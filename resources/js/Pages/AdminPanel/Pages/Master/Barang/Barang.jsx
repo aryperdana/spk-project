@@ -42,8 +42,6 @@ const Barang = ({ barang_data, dropdown_kategori }) => {
         foto_barang: "",
     });
 
-    console.log(data);
-
     const handleOnChange = (event) => {
         setData(event.target.name, event.target.value);
     };
