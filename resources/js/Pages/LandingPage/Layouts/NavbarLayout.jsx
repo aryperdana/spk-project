@@ -1,7 +1,8 @@
 import React from "react";
 import { Link } from "@inertiajs/react";
+import { RiUser3Fill } from "react-icons/ri";
 
-export const NavbarLayout = () => {
+export const NavbarLayout = ({ user }) => {
     return (
         <div>
             <div className="max-w-7xl mx-auto sticky top-0 z-50">
@@ -56,6 +57,7 @@ export const NavbarLayout = () => {
                                     </span>
                                 </div>
                             </label>
+
                             <div
                                 tabIndex={0}
                                 className="mt-3 card card-compact dropdown-content w-52 bg-base-100 shadow"
@@ -77,27 +79,16 @@ export const NavbarLayout = () => {
                         </div>
                     </div>
                     <div className="dropdown dropdown-end">
-                        <label
-                            tabIndex={0}
-                            className="btn btn-ghost btn-circle avatar"
-                        >
-                            <div className="w-6 rounded-full">
-                                <img src="https://w7.pngwing.com/pngs/178/595/png-transparent-user-profile-computer-icons-login-user-avatars-thumbnail.png" />
+                        <label tabIndex={0} className="btn btn-ghost gap-2">
+                            <div>{user}</div>
+                            <div className="w-6 h-6 text-black font-bold border border-black rounded-full">
+                                <RiUser3Fill className="m-auto align-middle mt-1" />
                             </div>
                         </label>
                         <ul
                             tabIndex={0}
                             className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
                         >
-                            <li>
-                                <a className="justify-between">
-                                    Profile
-                                    <span className="badge">New</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a>Settings</a>
-                            </li>
                             <li>
                                 <Link href="logout">Logout</Link>
                             </li>

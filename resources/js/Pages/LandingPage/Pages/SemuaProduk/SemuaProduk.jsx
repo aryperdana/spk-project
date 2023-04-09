@@ -1,11 +1,53 @@
 import React, { useState } from "react";
 import { ImSpinner8 } from "react-icons/im";
-import { router } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
 import { FooterLayout, NavbarLayout } from "../../Layouts";
+import { Alert, Input, Textarea } from "@/Pages/AdminPanel/Components";
 
-const SemuaProduk = ({ barang_data }) => {
-    console.log(barang_data);
+const SemuaProduk = ({ barang_data, user }) => {
+    const [modalConfig, setModalConfig] = useState({
+        type: "",
+        show: false,
+        data: {},
+    });
+    const [alertConfig, setAlertConfig] = useState({
+        show: false,
+        type: "error",
+        text: "",
+    });
     const [isLoading, setIsLoading] = useState(false);
+
+    const { data, setData, post, put, processing, errors, reset, progress } =
+        useForm({
+            nama_pemesan: user?.name,
+            alamat_pengiriman: "",
+            keterangan: "-",
+            detail: [],
+        });
+
+    const handleOnChange = (event) => {
+        setData(event.target.name, event.target.value);
+    };
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        post("/admin/pesanan", {
+            onSuccess: () => {
+                setAlertConfig({
+                    ...alertConfig,
+                    show: true,
+                    type: "success",
+                    text: "Barang dipesan",
+                });
+                setModalConfig({ show: false });
+                reset();
+            },
+            onError: () => {},
+            onFinish: () => {
+                setIsLoading(false);
+            },
+        });
+    };
+
     const handleSearch = (query) => {
         router.get(
             "/semua-produk",
@@ -19,9 +61,15 @@ const SemuaProduk = ({ barang_data }) => {
     };
     return (
         <div className="w-full py-8">
-            <NavbarLayout />
+            <NavbarLayout user={user?.name} />
             <div className="max-w-7xl my-4 mx-auto">
                 <div className="mx-6">
+                    {alertConfig.show && (
+                        <Alert
+                            type={alertConfig.type}
+                            text={alertConfig.text}
+                        />
+                    )}
                     <div className="form-control">
                         <input
                             type="text"
@@ -58,13 +106,39 @@ const SemuaProduk = ({ barang_data }) => {
                                             currency: "IDR",
                                         }).format(val.harga)}
                                     </p>
-                                    <div className="card-actions justify-end">
-                                        <div className="badge badge-outline badge-primary">
-                                            {val.kategori.nama_kategori_barang}
+                                    <div className="flex justify-end gap-2">
+                                        <div className="card-actions justify-end">
+                                            <div className="badge badge-outline badge-primary">
+                                                {
+                                                    val.kategori
+                                                        .nama_kategori_barang
+                                                }
+                                            </div>
                                         </div>
+                                        {val.diskon > 0 ? (
+                                            <div className="card-actions justify-end">
+                                                <div className="badge badge-outline badge-error">
+                                                    {val.diskon} %
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            ""
+                                        )}
                                     </div>
                                     <div className="card-actions justify-center">
-                                        <button className="btn w-full">
+                                        <button
+                                            className="btn w-full"
+                                            onClick={() => {
+                                                setModalConfig({
+                                                    show: true,
+                                                    data: val,
+                                                });
+                                                setData({
+                                                    ...data,
+                                                    detail: [val],
+                                                });
+                                            }}
+                                        >
                                             Buy Now
                                         </button>
                                     </div>
@@ -72,6 +146,82 @@ const SemuaProduk = ({ barang_data }) => {
                             </div>
                         ))
                     )}
+                </div>
+            </div>
+            <input
+                type="checkbox"
+                className="modal-toggle"
+                checked={modalConfig.show}
+            />
+            <div className="modal">
+                <div className="modal-box w-11/12 max-w-5xl">
+                    <div className="modal-middle mt-3">
+                        <form onSubmit={handleSubmit}>
+                            <div className="grid grid-cols-2 gap-3">
+                                <img
+                                    src={`http://127.0.0.1:8000/storage/${modalConfig?.data?.foto_barang}`}
+                                />
+                                <div>
+                                    <div className="text-lg">
+                                        <b>{modalConfig?.data?.nama_barang}</b>
+                                    </div>
+                                    <div className="mb-2">
+                                        {new Intl.NumberFormat("id-ID", {
+                                            style: "currency",
+                                            currency: "IDR",
+                                        }).format(modalConfig?.data?.harga)}
+                                    </div>
+                                    <div className="flex justify-start gap-2">
+                                        <div className="card-actions justify-end">
+                                            <div className="badge badge-outline badge-primary">
+                                                {
+                                                    modalConfig?.data?.kategori
+                                                        ?.nama_kategori_barang
+                                                }
+                                            </div>
+                                        </div>
+                                        {modalConfig?.data?.diskon > 0 ? (
+                                            <div className="card-actions justify-end">
+                                                <div className="badge badge-outline badge-error">
+                                                    {modalConfig?.data?.diskon}%
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            ""
+                                        )}
+                                    </div>
+                                    <div className="flex">
+                                        <Input
+                                            type="number"
+                                            placeholder="Masukan jumlah barang"
+                                            onChange={(val) => {
+                                                setData({
+                                                    ...data,
+                                                    detail: data.detail.map(
+                                                        (res) => ({
+                                                            ...res,
+                                                            qty: val.target
+                                                                .value,
+                                                        })
+                                                    ),
+                                                });
+                                            }}
+                                        />
+                                    </div>
+                                    <Textarea
+                                        placeholder="Masukan alamat pengiriman"
+                                        name="alamat_pengiriman"
+                                        onChange={handleOnChange}
+                                    />
+                                </div>
+                            </div>
+                            <div className="flex justify-end">
+                                <button className="btn btn-primary btn-sm">
+                                    Check Out
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
             <FooterLayout />

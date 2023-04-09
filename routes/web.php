@@ -4,8 +4,10 @@ use App\Http\Controllers\KategoriBarangController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SemuaProdukController;
+use App\Http\Controllers\PesananController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,11 +46,12 @@ Route::controller(LoginController::class)->group(function () {
 Route::group(['middleware' => ['auth']], function () {
     Route::group(['middleware' => ['checkUserLogin:1']], function () {
         Route::get('/admin/dashboard', function () {
-            return Inertia::render('AdminPanel/Pages/Dashboard');
+            return Inertia::render('AdminPanel/Pages/Dashboard', [ 'user' => Auth::user(),]);
         });
         Route::resource('/admin/user', UserController::class);
         Route::resource('/admin/kategori', KategoriBarangController::class);
         Route::resource('/admin/barang', BarangController::class);
+        Route::resource('/admin/pesanan', PesananController::class);
     });
 });
 

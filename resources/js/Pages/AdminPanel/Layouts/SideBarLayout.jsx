@@ -1,6 +1,12 @@
 import { Link } from "@inertiajs/react";
 import React from "react";
-import { AiOutlineHome } from "react-icons/ai";
+import {
+    AiOutlineHome,
+    AiOutlineUser,
+    AiOutlineDatabase,
+    AiOutlineShoppingCart,
+} from "react-icons/ai";
+import { BiCategory, BiUser } from "react-icons/bi";
 
 export const SideBarLayout = () => {
     return (
@@ -21,20 +27,26 @@ export const SideBarLayout = () => {
                 </li>
                 <li>
                     <Link href="/admin/user">
-                        <AiOutlineHome />
+                        <AiOutlineUser />
                         User
                     </Link>
                 </li>
                 <li>
                     <Link href="/admin/kategori">
-                        <AiOutlineHome />
+                        <BiCategory />
                         Kategori
                     </Link>
                 </li>
                 <li>
                     <Link href="/admin/barang">
-                        <AiOutlineHome />
+                        <AiOutlineDatabase />
                         Barang
+                    </Link>
+                </li>
+                <li>
+                    <Link href="/admin/pesanan">
+                        <AiOutlineShoppingCart />
+                        Pesanan
                     </Link>
                 </li>
             </ul>
