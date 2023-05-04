@@ -5,6 +5,7 @@ use App\Http\Controllers\BarangController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SemuaProdukController;
 use App\Http\Controllers\PesananController;
+use App\Http\Controllers\KeranjangController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
@@ -52,6 +53,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::resource('/admin/kategori', KategoriBarangController::class);
         Route::resource('/admin/barang', BarangController::class);
         Route::resource('/admin/pesanan', PesananController::class);
+        Route::resource('/admin/keranjang', KeranjangController::class);
     });
 });
 

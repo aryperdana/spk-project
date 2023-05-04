@@ -4,7 +4,7 @@ import { router, useForm } from "@inertiajs/react";
 import { FooterLayout, NavbarLayout } from "../../Layouts";
 import { Alert, Input, Textarea } from "@/Pages/AdminPanel/Components";
 
-const SemuaProduk = ({ barang_data, user }) => {
+const SemuaProduk = ({ barang_data, user, keranjang }) => {
     const [modalConfig, setModalConfig] = useState({
         type: "",
         show: false,
@@ -16,6 +16,7 @@ const SemuaProduk = ({ barang_data, user }) => {
         text: "",
     });
     const [isLoading, setIsLoading] = useState(false);
+    const [qty, setQty] = useState(0);
 
     const { data, setData, post, put, processing, errors, reset, progress } =
         useForm({
@@ -28,6 +29,7 @@ const SemuaProduk = ({ barang_data, user }) => {
     const handleOnChange = (event) => {
         setData(event.target.name, event.target.value);
     };
+
     const handleSubmit = (e) => {
         e.preventDefault();
         post("/admin/pesanan", {
@@ -37,6 +39,31 @@ const SemuaProduk = ({ barang_data, user }) => {
                     show: true,
                     type: "success",
                     text: "Barang dipesan",
+                });
+                setModalConfig({ show: false });
+                reset();
+            },
+            onError: () => {},
+            onFinish: () => {
+                setIsLoading(false);
+            },
+        });
+    };
+
+    const handleAddToChart = () => {
+        const finalValues = {
+            id_barang: modalConfig?.data?.id,
+            id_customer: user?.id,
+            qty: qty,
+        };
+
+        router.post("/admin/keranjang", finalValues, {
+            onSuccess: () => {
+                setAlertConfig({
+                    ...alertConfig,
+                    show: true,
+                    type: "success",
+                    text: "Barang ditambah ke keranjang",
                 });
                 setModalConfig({ show: false });
                 reset();
@@ -61,7 +88,12 @@ const SemuaProduk = ({ barang_data, user }) => {
     };
     return (
         <div className="w-full py-8">
-            <NavbarLayout user={user?.name} />
+            <NavbarLayout
+                user={user}
+                dataKeranjang={keranjang}
+                setAlertConfig={setAlertConfig}
+                alertConfig={alertConfig}
+            />
             <div className="max-w-7xl my-4 mx-auto">
                 <div className="mx-6">
                     {alertConfig.show && (
@@ -205,6 +237,7 @@ const SemuaProduk = ({ barang_data, user }) => {
                                                         })
                                                     ),
                                                 });
+                                                setQty(val?.target?.value);
                                             }}
                                         />
                                     </div>
@@ -215,7 +248,26 @@ const SemuaProduk = ({ barang_data, user }) => {
                                     />
                                 </div>
                             </div>
-                            <div className="flex justify-end">
+                            <div className="flex justify-end gap-2">
+                                <div
+                                    className="btn btn-secondary btn-outline btn-sm"
+                                    onClick={() =>
+                                        setModalConfig({
+                                            ...modalConfig,
+                                            show: false,
+                                        })
+                                    }
+                                >
+                                    Batal
+                                </div>
+                                <div
+                                    className="btn btn-success btn-outline btn-sm"
+                                    onClick={() =>
+                                        handleAddToChart(data?.detail)
+                                    }
+                                >
+                                    Tambah Ke Keranjang
+                                </div>
                                 <button className="btn btn-primary btn-sm">
                                     Check Out
                                 </button>

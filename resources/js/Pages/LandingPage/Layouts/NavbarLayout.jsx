@@ -1,8 +1,256 @@
-import React from "react";
-import { Link } from "@inertiajs/react";
+import React, { useEffect, useState } from "react";
+import { Link, router, useForm } from "@inertiajs/react";
 import { RiUser3Fill } from "react-icons/ri";
+import Checkbox from "@/Components/Checkbox";
+import { Textarea } from "@/Pages/AdminPanel/Components";
 
-export const NavbarLayout = ({ user }) => {
+const ChartShoping = ({
+    dataKeranjang,
+    name,
+    setAlertConfig,
+    alertConfig,
+    setModalConfig,
+    modalConfig,
+}) => {
+    const { data, setData, reset, post } = useForm({
+        nama_pemesan: name,
+        alamat_pengiriman: "",
+        keterangan: "-",
+        detail: [],
+    });
+    const total =
+        dataKeranjang &&
+        dataKeranjang.reduce(
+            (acc, curr) =>
+                acc +
+                curr.qty *
+                    curr.barang.harga *
+                    ((100 - curr.barang.diskon) / 100),
+            0
+        );
+
+    const handleOnChange = (event) => {
+        setData(event.target.name, event.target.value);
+    };
+    const checkboxHandler = (e, val) => {
+        const finalValues = {
+            id_keranjang: val.id,
+            id: val.id_barang,
+            qty: val.qty,
+            id_customer: val.id_customer,
+            is_checkout: 1,
+        };
+        console.log(e?.target?.checked);
+        if (e?.target?.checked) {
+            setData({
+                ...data,
+                detail: [...data.detail, finalValues],
+            });
+        }
+        if (!e?.target?.checked) {
+            const removeData = data.detail.filter(
+                (item) => item.id_keranjang !== val.id
+            );
+            setData({
+                ...data,
+                detail: removeData,
+            });
+        }
+    };
+
+    const handleSubmit = (e) => {
+        const finalValues = data?.detail?.map((val) => ({
+            id: val.id_keranjang,
+            id_barang: val.id,
+            id_customer: val.id_customer,
+            qty: val.qty,
+            is_checkout: 1,
+        }));
+        e.preventDefault();
+
+        post("/admin/pesanan", {
+            onSuccess: () => {},
+            onError: () => {},
+            onFinish: () => {
+                router.put("/admin/keranjang/update", finalValues);
+                setModalConfig({ show: false });
+                setAlertConfig({
+                    ...alertConfig,
+                    show: true,
+                    type: "success",
+                    text: "Barang dipesan",
+                });
+                reset();
+            },
+        });
+    };
+
+    console.log(data);
+
+    return (
+        <div>
+            <input
+                type="checkbox"
+                id="my-modal"
+                checked={modalConfig?.show}
+                className="modal-toggle"
+            />
+            <div className="modal">
+                <div className="modal-box w-11/12 max-w-5xl">
+                    <div className="text-center">
+                        <b>Keranjang Belanja</b>
+                    </div>
+                    <hr className="mt-4 mb-4" />
+                    <form onSubmit={handleSubmit}>
+                        <Textarea
+                            placeholder="Masukan alamat pengiriman"
+                            name="alamat_pengiriman"
+                            onChange={handleOnChange}
+                        />
+                        <div className="overflow-x-auto mt-4">
+                            <table className="table w-full">
+                                <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>Gambar</th>
+                                        <th>Nama Barang</th>
+                                        <th>Qty</th>
+                                        <th>Diskon</th>
+                                        <th>Harga Barang</th>
+                                        <td>SubTotal</td>
+                                        <td>Pilih</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {dataKeranjang &&
+                                    dataKeranjang.length > 0 ? (
+                                        <>
+                                            {dataKeranjang.map((val, ind) => {
+                                                const subTotal =
+                                                    parseInt(val.qty ?? 0) *
+                                                    parseInt(
+                                                        val.barang.harga ?? 0
+                                                    ) *
+                                                    ((100 -
+                                                        parseInt(
+                                                            val?.barang
+                                                                ?.diskon ?? 0
+                                                        )) /
+                                                        100);
+                                                return (
+                                                    <tr>
+                                                        <td width="20">
+                                                            {ind + 1}
+                                                        </td>
+                                                        <td width="150">
+                                                            <figure className="p-0">
+                                                                <img
+                                                                    src={`http://127.0.0.1:8000/storage/${val.barang.foto_barang}`}
+                                                                />
+                                                            </figure>
+                                                        </td>
+                                                        <td>
+                                                            {
+                                                                val?.barang
+                                                                    ?.nama_barang
+                                                            }
+                                                        </td>
+                                                        <td>{val.qty}</td>
+                                                        <td>
+                                                            {val?.barang
+                                                                ?.diskon + " %"}
+                                                        </td>
+                                                        <td>
+                                                            {new Intl.NumberFormat(
+                                                                "id-ID",
+                                                                {
+                                                                    style: "currency",
+                                                                    currency:
+                                                                        "IDR",
+                                                                }
+                                                            ).format(
+                                                                val?.barang
+                                                                    ?.harga
+                                                            )}
+                                                        </td>
+                                                        <td>
+                                                            {new Intl.NumberFormat(
+                                                                "id-ID",
+                                                                {
+                                                                    style: "currency",
+                                                                    currency:
+                                                                        "IDR",
+                                                                }
+                                                            ).format(subTotal)}
+                                                        </td>
+                                                        <td>
+                                                            <Checkbox
+                                                                name={`checkbox_${val?.id}`}
+                                                                onChange={(e) =>
+                                                                    checkboxHandler(
+                                                                        e,
+                                                                        val
+                                                                    )
+                                                                }
+                                                            />
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                            <tr>
+                                                <th
+                                                    colSpan="6"
+                                                    className="text-right"
+                                                >
+                                                    Total :
+                                                </th>
+                                                <th>
+                                                    {new Intl.NumberFormat(
+                                                        "id-ID",
+                                                        {
+                                                            style: "currency",
+                                                            currency: "IDR",
+                                                        }
+                                                    ).format(total)}
+                                                </th>
+                                            </tr>
+                                        </>
+                                    ) : (
+                                        <tr>
+                                            <th
+                                                colSpan="8"
+                                                className="text-center"
+                                            >
+                                                Tidak Ada Data
+                                            </th>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div className="modal-action">
+                            <label
+                                className="btn btn-sm"
+                                onClick={() => setModalConfig({ show: false })}
+                            >
+                                Batal
+                            </label>
+                            <button className="btn btn-sm">Checkout</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export const NavbarLayout = ({
+    user,
+    dataKeranjang,
+    setAlertConfig,
+    alertConfig,
+}) => {
+    const [modalConfig, setModalConfig] = useState({ show: false });
     return (
         <div>
             <div className="max-w-7xl mx-auto sticky top-0 z-50">
@@ -33,9 +281,11 @@ export const NavbarLayout = ({ user }) => {
                     </div>
                     <div className="flex-none">
                         <div className="dropdown dropdown-end">
-                            <label
+                            <button
                                 tabIndex={0}
                                 className="btn btn-ghost btn-circle"
+                                htmlFor="my-modal"
+                                onClick={() => setModalConfig({ show: true })}
                             >
                                 <div className="indicator">
                                     <svg
@@ -53,34 +303,18 @@ export const NavbarLayout = ({ user }) => {
                                         />
                                     </svg>
                                     <span className="badge badge-sm indicator-item">
-                                        8
+                                        {dataKeranjang &&
+                                        dataKeranjang.length > 0
+                                            ? dataKeranjang.length
+                                            : 0}
                                     </span>
                                 </div>
-                            </label>
-
-                            <div
-                                tabIndex={0}
-                                className="mt-3 card card-compact dropdown-content w-52 bg-base-100 shadow"
-                            >
-                                <div className="card-body">
-                                    <span className="font-bold text-lg">
-                                        8 Items
-                                    </span>
-                                    <span className="text-info">
-                                        Subtotal: $999
-                                    </span>
-                                    <div className="card-actions">
-                                        <button className="btn btn-primary btn-block">
-                                            View cart
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                            </button>
                         </div>
                     </div>
                     <div className="dropdown dropdown-end">
                         <label tabIndex={0} className="btn btn-ghost gap-2">
-                            <div>{user}</div>
+                            <div>{user?.name}</div>
                             <div className="w-6 h-6 text-black font-bold border border-black rounded-full">
                                 <RiUser3Fill className="m-auto align-middle mt-1" />
                             </div>
@@ -96,6 +330,14 @@ export const NavbarLayout = ({ user }) => {
                     </div>
                 </div>
             </div>
+            <ChartShoping
+                dataKeranjang={dataKeranjang}
+                name={user?.name}
+                setAlertConfig={setAlertConfig}
+                alertConfig={alertConfig}
+                setModalConfig={setModalConfig}
+                modalConfig={modalConfig}
+            />
         </div>
     );
 };
