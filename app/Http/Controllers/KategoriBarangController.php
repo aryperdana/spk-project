@@ -22,6 +22,8 @@ class KategoriBarangController extends Controller
             'kategori_data' => $kategori_barang,
         ]);
     }
+
+    
     /**
      * Show the form for creating a new resource.
      *
