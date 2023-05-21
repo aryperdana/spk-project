@@ -7,6 +7,7 @@ export const Textarea = ({
     name,
     value,
     size,
+    disabled,
 }) => {
     return (
         <div className="form-control">
@@ -19,6 +20,7 @@ export const Textarea = ({
                 onChange={onChange}
                 name={name}
                 value={value}
+                disabled={disabled}
             ></textarea>
         </div>
     );

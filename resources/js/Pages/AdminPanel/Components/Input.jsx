@@ -8,6 +8,7 @@ export const Input = ({
     name,
     value,
     errorText,
+    disabled,
 }) => {
     return (
         <div>
@@ -16,6 +17,7 @@ export const Input = ({
                     <span className="label-text">{label}</span>
                 </label>
                 <input
+                    disabled={disabled}
                     type={type}
                     placeholder={placeholder}
                     name={name}

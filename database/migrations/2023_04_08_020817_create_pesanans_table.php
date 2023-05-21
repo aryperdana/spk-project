@@ -13,9 +13,13 @@ return new class extends Migration
     {
         Schema::create('pesanans', function (Blueprint $table) {
             $table->id();
+            $table->string('tanggal');
+            $table->string('no_transaksi');
             $table->string('nama_pemesan');
             $table->string('alamat_pengiriman');
             $table->string('keterangan');
+            $table->boolean('terkirim');
+            $table->boolean('is_online');
             $table->timestamps();
         });
     }

@@ -16,4 +16,9 @@ class DetailPesanan extends Model
         return $this->belongsTo(Pesanan::class, 'id_pesanan');
     }
 
+    public function detail_barang()
+    {
+        return $this->belongsTo(Barang::class, 'id_barang');
+    }
+
 }

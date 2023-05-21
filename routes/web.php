@@ -5,6 +5,7 @@ use App\Http\Controllers\BarangController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SemuaProdukController;
 use App\Http\Controllers\PesananController;
+use App\Http\Controllers\KasirController;
 use App\Http\Controllers\KeranjangController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -36,6 +37,11 @@ Route::get('/udeng', [SemuaProdukController::class, 'udeng']);
 Route::get('/saput', [SemuaProdukController::class, 'saput']);
 Route::get('/kamen', [SemuaProdukController::class, 'kamen']);
 Route::get('/baju', [SemuaProdukController::class, 'baju']);
+Route::get('/register', function () {
+    return Inertia::render('Auth/Register', [ 'user' => Auth::user(),]);
+});
+Route::resource('/admin/user', UserController::class);
+
 
 
 Route::controller(LoginController::class)->group(function () {
@@ -46,13 +52,14 @@ Route::controller(LoginController::class)->group(function () {
 
 Route::group(['middleware' => ['auth']], function () {
     Route::group(['middleware' => ['checkUserLogin:1']], function () {
-        Route::get('/admin/dashboard', function () {
+        Route::get('/admin', function () {
             return Inertia::render('AdminPanel/Pages/Dashboard', [ 'user' => Auth::user(),]);
         });
-        Route::resource('/admin/user', UserController::class);
+       
         Route::resource('/admin/kategori', KategoriBarangController::class);
         Route::resource('/admin/barang', BarangController::class);
         Route::resource('/admin/pesanan', PesananController::class);
+        Route::resource('/admin/kasir', KasirController::class);
         Route::resource('/admin/keranjang', KeranjangController::class);
     });
 });
