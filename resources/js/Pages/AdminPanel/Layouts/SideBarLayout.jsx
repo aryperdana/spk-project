@@ -44,6 +44,12 @@ export const SideBarLayout = () => {
                     </Link>
                 </li>
                 <li>
+                    <Link href="/admin/kasir">
+                        <AiOutlineShoppingCart />
+                        Penjualan
+                    </Link>
+                </li>
+                <li>
                     <Link href="/admin/pesanan">
                         <AiOutlineShoppingCart />
                         Pesanan

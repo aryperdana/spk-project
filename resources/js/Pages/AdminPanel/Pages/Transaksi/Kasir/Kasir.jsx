@@ -1,15 +1,17 @@
 import {
     Alert,
     Input,
+    Modal,
     Pagination,
     Textarea,
 } from "@/Pages/AdminPanel/Components";
 import { Link, useForm } from "@inertiajs/react";
 import React, { useState } from "react";
 import MainLayout from "../../../Layouts";
+import { HiOutlineTrash, HiOutlinePencilAlt } from "react-icons/hi";
 import { AiOutlineEye } from "react-icons/ai";
 
-const Pesanan = ({ pesanan_data }) => {
+const Kasir = ({ kasir_data }) => {
     const [modalConfig, setModalConfig] = useState({
         type: "",
         show: false,
@@ -32,14 +34,8 @@ const Pesanan = ({ pesanan_data }) => {
         delete: destroy,
     } = useForm({
         id: "",
-        tanggal: "",
-        no_transaksi: "",
-        nama_pemesan: "",
-        alamat_pengiriman: "",
-        keterangan: "-",
-        detail: [],
-        is_online: 1,
-        terkirim: 0,
+        nama_kategori_barang: "",
+        keterangan: "",
     });
 
     const handleOnChange = (event) => {
@@ -48,21 +44,38 @@ const Pesanan = ({ pesanan_data }) => {
 
     const submit = (e) => {
         e.preventDefault();
-
-        put(route("pesanan.update", data.id), {
-            onSuccess: () => {
-                setModalConfig({ ...modalConfig, show: false, type: "" });
-                setAlertConfig({
-                    ...alertConfig,
-                    show: true,
-                    type: "success",
-                    text: "Status Pengiriman Berhasil Diubah",
-                });
-                reset();
-            },
-            onError: () => {},
-            onFinish: () => {},
-        });
+        if (modalConfig.type === "add") {
+            post(route("kategori.store"), {
+                onSuccess: () => {
+                    setModalConfig({ ...modalConfig, show: false, type: "" });
+                    setAlertConfig({
+                        ...alertConfig,
+                        show: true,
+                        type: "success",
+                        text: "Tambah Data Berhasil",
+                    });
+                    reset();
+                },
+                onError: () => {},
+                onFinish: () => {},
+            });
+        }
+        if (modalConfig.type === "update") {
+            put(route("kategori.update", data.id), {
+                onSuccess: () => {
+                    setModalConfig({ ...modalConfig, show: false, type: "" });
+                    setAlertConfig({
+                        ...alertConfig,
+                        show: true,
+                        type: "success",
+                        text: "Ubah Data Berhasil",
+                    });
+                    reset();
+                },
+                onError: () => {},
+                onFinish: () => {},
+            });
+        }
     };
 
     const rupiah = (number) => {
@@ -83,10 +96,8 @@ const Pesanan = ({ pesanan_data }) => {
             0
         );
 
-    console.log(data);
-
     return (
-        <MainLayout title="Pesanan" navbarTitle="Pesanan">
+        <MainLayout title="Kasir" navbarTitle="Kasir">
             {alertConfig.show && (
                 <Alert type={alertConfig.type} text={alertConfig.text} />
             )}
@@ -102,7 +113,7 @@ const Pesanan = ({ pesanan_data }) => {
                         </div>
                         <Link
                             className="btn btn-primary btn-sm"
-                            href="pesanan/create"
+                            href="kasir/create"
                         >
                             Tambah
                         </Link>
@@ -119,17 +130,12 @@ const Pesanan = ({ pesanan_data }) => {
                                     <th className="text-center">
                                         No. Transaksi
                                     </th>
-                                    <th className="text-center">Pemesan</th>
-                                    <th className="text-center">
-                                        Alamat Pengiriman
-                                    </th>
                                     <th className="text-center">Keterangan</th>
-                                    <th className="text-center">Kirim</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {pesanan_data?.data?.length > 0 ? (
-                                    pesanan_data?.data?.map((val, ind) => (
+                                {kasir_data?.data?.length > 0 ? (
+                                    kasir_data?.data?.map((val, ind) => (
                                         <tr>
                                             <td className="w-10">{ind + 1}</td>
                                             <td className="w-10">
@@ -147,82 +153,21 @@ const Pesanan = ({ pesanan_data }) => {
                                                     >
                                                         <AiOutlineEye />
                                                     </button>
+                                                    {/* <button
+                                                        className="btn btn-outline btn-error btn-sm"
+                                                        onClick={() => {
+                                                            deleteSubmit(
+                                                                val.id
+                                                            );
+                                                        }}
+                                                    >
+                                                        <HiOutlineTrash />
+                                                    </button> */}
                                                 </div>
                                             </td>
                                             <td>{val.tanggal}</td>
                                             <td>{val.no_transaksi}</td>
-                                            <td>{val.nama_pemesan}</td>
-                                            <td>{val.alamat_pengiriman}</td>
                                             <td>{val.keterangan}</td>
-                                            <td className="text-center">
-                                                {val.terkirim ? (
-                                                    "Data Sudah Dikirim"
-                                                ) : (
-                                                    <button
-                                                        className="btn btn-outline btn-primary btn-sm"
-                                                        onClick={() => {
-                                                            setModalConfig({
-                                                                ...modalConfig,
-                                                                show: true,
-                                                                type: "kirim",
-                                                                data: val,
-                                                            });
-
-                                                            setData({
-                                                                ...data,
-                                                                id: val.id,
-                                                                tanggal:
-                                                                    val.tanggal,
-                                                                no_transaksi:
-                                                                    val.no_transaksi,
-                                                                nama_pemesan:
-                                                                    val.nama_pemesan,
-                                                                alamat_pengiriman:
-                                                                    val.alamat_pengiriman,
-                                                                keterangan:
-                                                                    val.keterangan,
-                                                                detail: val.detail_pesanan.map(
-                                                                    (res) => ({
-                                                                        id: res
-                                                                            ?.detail_barang
-                                                                            ?.id,
-                                                                        diskon: res
-                                                                            ?.detail_barang
-                                                                            ?.diskon,
-                                                                        foto_barang:
-                                                                            res
-                                                                                ?.detail_barang
-                                                                                ?.foto_barang,
-                                                                        harga: res
-                                                                            ?.detail_barang
-                                                                            ?.harga,
-                                                                        id_kategori_barang:
-                                                                            res
-                                                                                ?.detail_barang
-                                                                                ?.id_kategori_barang,
-                                                                        nama_barang:
-                                                                            res
-                                                                                ?.detail_barang
-                                                                                ?.nama_barang,
-                                                                        qty: res?.qty,
-                                                                        stok: res
-                                                                            ?.detail_barang
-                                                                            ?.stok,
-                                                                        ukuran: res
-                                                                            ?.detail_barang
-                                                                            ?.ukuran,
-                                                                    })
-                                                                ),
-                                                                is_online:
-                                                                    val.is_online,
-                                                                terkirim: 1,
-                                                            });
-                                                        }}
-                                                    >
-                                                        Kirim
-                                                    </button>
-                                                )}
-                                            </td>
                                         </tr>
                                     ))
                                 ) : (
@@ -239,11 +184,11 @@ const Pesanan = ({ pesanan_data }) => {
                         </table>
                     </div>
                     <div className="flex justify-center">
-                        {pesanan_data?.total > 10 && (
+                        {kasir_data?.total > 10 && (
                             <Pagination
-                                next={pesanan_data?.next_page_url}
-                                prev={pesanan_data?.prev_page_url}
-                                curr={pesanan_data?.current_page}
+                                next={kasir_data?.next_page_url}
+                                prev={kasir_data?.prev_page_url}
+                                curr={kasir_data?.current_page}
                             />
                         )}
                     </div>
@@ -257,34 +202,28 @@ const Pesanan = ({ pesanan_data }) => {
             />
             <div className="modal">
                 <div className="modal-box w-11/12 max-w-5xl">
-                    <div className="font-bold mb-3">Detail Data Pesanan</div>
+                    <div className="font-bold mb-3">Detail Data Kasir</div>
                     <hr />
+
                     <div className="modal-middle mt-3">
                         <form onSubmit={submit}>
-                            <div className="grid grid-cols-2 gap-3">
+                            <div className="grid grid-cols-2 gap-3 mb-10">
                                 <div className="grid grid-rows-1">
                                     <Input
-                                        label="Tanggal Pesanan"
+                                        label="Tanggal Penjualan"
                                         name="tanggal"
-                                        disabled
-                                        placeholder="Masukan tanggal"
-                                        type="date"
                                         value={modalConfig.data.tanggal}
-                                    />
-                                    <Input
-                                        label="Pemesan"
+                                        placeholder="Masukan tanggal"
                                         disabled
-                                        name="nama_pemesan"
-                                        value={modalConfig.data.nama_pemesan}
-                                        placeholder="Masukan pemesan"
                                     />
+
                                     <Textarea
                                         label="Keterangan"
-                                        disabled
-                                        value={modalConfig.data.keterangan}
                                         name="keterangan"
+                                        value={modalConfig.data.keterangan}
                                         placeholder="Masukan keterangan"
-                                        size="h-16"
+                                        size="h-24"
+                                        disabled
                                     />
                                 </div>
                                 <div className="grid grid-rows-1">
@@ -292,20 +231,10 @@ const Pesanan = ({ pesanan_data }) => {
                                         label="No. Transaksi"
                                         name="no_transaksi"
                                         disabled
-                                        value={modalConfig.data.no_transaksi}
+                                        onChange={(e) => {}}
                                         placeholder="Pilih tanggal terlebih dahulu"
                                         type="text"
-                                        // value={noTransaksi}
-                                    />
-                                    <Textarea
-                                        label="Alamat"
-                                        disabled
-                                        value={
-                                            modalConfig.data.alamat_pengiriman
-                                        }
-                                        name="alamat_pengiriman"
-                                        placeholder="Masukan alamat pengiriman"
-                                        size="h-36"
+                                        value={modalConfig.data.no_transaksi}
                                     />
                                 </div>
                             </div>
@@ -427,7 +356,6 @@ const Pesanan = ({ pesanan_data }) => {
                                     </tbody>
                                 </table>
                             </div>
-
                             <div className="modal-action">
                                 <button
                                     className="btn btn-sm"
@@ -444,14 +372,6 @@ const Pesanan = ({ pesanan_data }) => {
                                 >
                                     Tutup
                                 </button>
-                                {modalConfig.type === "kirim" && (
-                                    <button
-                                        className="btn btn-primary btn-sm"
-                                        disabled={processing}
-                                    >
-                                        TerKirim
-                                    </button>
-                                )}
                             </div>
                         </form>
                     </div>
@@ -461,4 +381,4 @@ const Pesanan = ({ pesanan_data }) => {
     );
 };
 
-export default Pesanan;
+export default Kasir;

@@ -17,4 +17,10 @@ class Barang extends Model
     {
         return $this->belongsTo(KategoriBarang::class, 'id_kategori_barang');
     }
+
+    public function detail_pesanan()
+    {
+        return $this->belongsTo(DetailPesanan::class, 'id');
+    }
+
 }

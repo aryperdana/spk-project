@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -40,6 +41,8 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        $id = Auth::user();
+        // dd($id);
 
         $request->validate([
             'name' => 'required',
@@ -58,7 +61,12 @@ class UserController extends Controller
         $user->level = $request->level;
         $user->save();
 
-        return to_route('user.index');
+        if ($id = Auth::user()) {
+            return to_route('user.index');
+        } else {
+            return to_route('login');
+        }
+       
     }
 
     /**

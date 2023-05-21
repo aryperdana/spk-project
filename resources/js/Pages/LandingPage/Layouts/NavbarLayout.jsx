@@ -251,6 +251,7 @@ export const NavbarLayout = ({
     alertConfig,
 }) => {
     const [modalConfig, setModalConfig] = useState({ show: false });
+    console.log(user);
     return (
         <div>
             <div className="max-w-7xl mx-auto sticky top-0 z-50">
@@ -324,7 +325,13 @@ export const NavbarLayout = ({
                             className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
                         >
                             <li>
-                                <Link href="logout">Logout</Link>
+                                {!user && (
+                                    <>
+                                        <Link href="login">Login</Link>
+                                        <Link href="register">Register</Link>
+                                    </>
+                                )}
+                                {user && <Link href="logout">Logout</Link>}
                             </li>
                         </ul>
                     </div>

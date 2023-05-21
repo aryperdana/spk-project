@@ -5,15 +5,18 @@ import {
     Pagination,
     Textarea,
 } from "@/Pages/AdminPanel/Components";
-import { Link, useForm } from "@inertiajs/react";
-import React, { useState } from "react";
+import { router, useForm } from "@inertiajs/react";
+import React, { useState, useEffect } from "react";
 import MainLayout from "../../../Layouts";
 import { IoAddOutline } from "react-icons/io5";
 import { HiOutlineTrash, HiOutlinePencilAlt } from "react-icons/hi";
 
-const TambahPesanan = ({ barang_dropdown, kategori_data }) => {
+const TambahKasir = ({ barang_dropdown, kategori_data }) => {
     const [dataBarang, setDataBarang] = useState({});
-    const [noTransaksi, setnoTransaksi] = useState("");
+    const [noTransaksiConfig, setNoTransaksiConfig] = useState({
+        loading: false,
+        text: "",
+    });
     const {
         data,
         setData,
@@ -24,12 +27,13 @@ const TambahPesanan = ({ barang_dropdown, kategori_data }) => {
         reset,
         delete: destroy,
     } = useForm({
+        no_transaksi: "",
         tanggal: "",
-        nama_pemesan: "",
-        alamat_pengiriman: "",
+        nama_pemesan: "-",
+        alamat_pengiriman: "-",
         keterangan: "-",
         detail: [],
-        is_online: 1,
+        is_online: 0,
         terkirim: 0,
     });
 
@@ -46,7 +50,7 @@ const TambahPesanan = ({ barang_dropdown, kategori_data }) => {
 
     const submit = (e) => {
         e.preventDefault();
-        post(route("pesanan.store"), {
+        post(route("kasir.store"), {
             onSuccess: () => {
                 // setModalConfig({ ...modalConfig, show: false, type: "" });
                 // setAlertConfig({
@@ -72,26 +76,29 @@ const TambahPesanan = ({ barang_dropdown, kategori_data }) => {
             acc + curr.qty * curr.harga * ((100 - curr.diskon) / 100),
         0
     );
-    console.log(data);
+
     const fetchData = (date) => {
-        fetch(`/api/admin/pesanan/get-kode-pesanan/?date=${date}`)
+        setNoTransaksiConfig({ loading: true, text: "" });
+        fetch(`/api/admin/kasir/get-kode-kasir/?date=${date}`)
             .then((response) => response.json())
             .then((res) => {
-                setnoTransaksi(res.data);
+                setNoTransaksiConfig({ text: res.data, loading: false });
                 setData({ ...data, no_transaksi: res.data, tanggal: date });
             })
-            .catch((error) => setnoTransaksi(""));
+            .catch((error) =>
+                setNoTransaksiConfig({ loading: false, text: "" })
+            );
     };
 
     return (
-        <MainLayout title="Pesanan" navbarTitle="Tambah Pesanan">
+        <MainLayout title="Penjualan" navbarTitle="Tambah Penjualan">
             <form onSubmit={submit}>
                 <div className="card w-full bg-base-100 shadow-sm">
                     <div className="card-body">
                         <div className="grid grid-cols-2 gap-3">
                             <div className="grid grid-rows-1">
                                 <Input
-                                    label="Tanggal Pesanan"
+                                    label="Tanggal Penjualan"
                                     name="tanggal"
                                     onChange={(e) => {
                                         fetchData(e.target.value);
@@ -99,18 +106,13 @@ const TambahPesanan = ({ barang_dropdown, kategori_data }) => {
                                     placeholder="Masukan tanggal"
                                     type="date"
                                 />
-                                <Input
-                                    label="Pemesan"
-                                    name="nama_pemesan"
-                                    onChange={handleOnChange}
-                                    placeholder="Masukan pemesan"
-                                />
+
                                 <Textarea
                                     label="Keterangan"
                                     name="keterangan"
                                     onChange={handleOnChange}
                                     placeholder="Masukan keterangan"
-                                    size="h-16"
+                                    size="h-24"
                                 />
                             </div>
                             <div className="grid grid-rows-1">
@@ -121,14 +123,7 @@ const TambahPesanan = ({ barang_dropdown, kategori_data }) => {
                                     onChange={(e) => {}}
                                     placeholder="Pilih tanggal terlebih dahulu"
                                     type="text"
-                                    value={noTransaksi}
-                                />
-                                <Textarea
-                                    label="Alamat"
-                                    name="alamat_pengiriman"
-                                    onChange={handleOnChange}
-                                    placeholder="Masukan alamat pengiriman"
-                                    size="h-36"
+                                    value={noTransaksiConfig.text}
                                 />
                             </div>
                         </div>
@@ -302,7 +297,7 @@ const TambahPesanan = ({ barang_dropdown, kategori_data }) => {
                                 className="btn btn-primary btn-sm"
                                 disabled={processing}
                             >
-                                Simpan Pesanan
+                                Simpan Penjualan
                             </button>
                         </div>
                     </div>
@@ -312,4 +307,4 @@ const TambahPesanan = ({ barang_dropdown, kategori_data }) => {
     );
 };
 
-export default TambahPesanan;
+export default TambahKasir;

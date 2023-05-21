@@ -12,7 +12,7 @@ class LoginController extends Controller
     {
         if (Auth::user()) {
             if (Auth::user()->level === "1")  {
-                return redirect()->intended('/admin/dashboard');
+                return redirect()->intended('/admin');
             } else {
                 return redirect()->intended('/');
             }
@@ -46,7 +46,7 @@ class LoginController extends Controller
 
             if ($user) {
                 if ($user->level === "1")  {
-                    return redirect()->intended('/admin/dashboard');
+                    return redirect()->intended('/admin');
                 } else {
                     return redirect()->intended('/');
                 }

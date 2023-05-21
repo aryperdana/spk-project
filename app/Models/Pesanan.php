@@ -13,6 +13,6 @@ class Pesanan extends Model
 
     public function detail_pesanan()
     {
-        return $this->hasMany(DetailPesanan::class, 'id');
+        return $this->hasMany(DetailPesanan::class, 'id')->with('detail_barang');
     }
 }

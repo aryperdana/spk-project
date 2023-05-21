@@ -67,15 +67,6 @@ class KeranjangController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // dd($request->request->all());
-        // $request->validate([
-        //     'qty' => 'required'
-        // ],
-        // [
-        //     'qty.required' => 'Qty Tidak Boleh Kosong',
-        // ]);
-
-        // Keranjang::whereIn('id', $request->request->all())->delete();
 
         foreach ($request->request->all() as $key => $value) {
             $detail = array(
@@ -88,12 +79,7 @@ class KeranjangController extends Controller
             $detail = Keranjang::create($detail);
         }
     
-        // $keranjang = Keranjang::find($request->id);
-        // $keranjang->id_barang = $request->id_barang;
-        // $keranjang->id_customer = $request->id_customer;
-        // $keranjang->qty = $request->qty;
-        // $keranjang->is_checkout = $request->is_checkout;
-        // $keranjang->save();
+   
     }
 
     /**
