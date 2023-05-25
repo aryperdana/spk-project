@@ -16,6 +16,9 @@ const ChartShoping = ({
         nama_pemesan: name,
         alamat_pengiriman: "",
         keterangan: "-",
+        tanggal: new Date().toISOString().slice(0, 10),
+        is_online: 1,
+        terkirim: 0,
         detail: [],
     });
     const total =
@@ -40,7 +43,7 @@ const ChartShoping = ({
             id_customer: val.id_customer,
             is_checkout: 1,
         };
-        console.log(e?.target?.checked);
+
         if (e?.target?.checked) {
             setData({
                 ...data,

@@ -53,8 +53,18 @@ class PesananController extends Controller
         ]);
 
 
+        $date = $request->tanggal;
+ 
+        $year = Carbon::createFromFormat('Y-m-d', $date)->format('Y');
+        $month = Carbon::createFromFormat('Y-m-d', $date)->format('m');
+        $prefix = $year . '/' . $month . '/PSN/';
+        $no = Auth::user()->level === '1' ? $request->no_transaksi : IdGenerator::generate(['table' => 'pesanans', 'field' =>'no_transaksi', 'length' => 16, 'prefix' => $prefix, 'reset_on_prefix_change' => true]);
+      
+      
+        
+
         $pesanan = new Pesanan();
-        $pesanan->no_transaksi = $request->no_transaksi;
+        $pesanan->no_transaksi = $no;
         $pesanan->tanggal = $request->tanggal;
         $pesanan->nama_pemesan = $request->nama_pemesan;
         $pesanan->alamat_pengiriman = $request->alamat_pengiriman;

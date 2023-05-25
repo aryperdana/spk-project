@@ -55,6 +55,12 @@ export const SideBarLayout = () => {
                         Pesanan
                     </Link>
                 </li>
+                <li>
+                    <Link href="/admin/laporan-rekap-penjualan">
+                        <AiOutlineShoppingCart />
+                        Rekap Penjualan
+                    </Link>
+                </li>
             </ul>
         </div>
     );

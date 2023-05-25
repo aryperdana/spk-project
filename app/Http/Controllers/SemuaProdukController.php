@@ -13,7 +13,7 @@ class SemuaProdukController extends Controller
     public function index(Request $request)
     {
         $id_customer = Auth::user()->id ?? 0;
-        dd($id_customer);
+        // dd($id_customer);
         $keranjang = Keranjang::where('is_checkout', 0)->where('id_customer', $id_customer)->with('barang')->get();
       
         $key = $request->key;
