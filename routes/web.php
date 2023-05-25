@@ -7,6 +7,8 @@ use App\Http\Controllers\SemuaProdukController;
 use App\Http\Controllers\PesananController;
 use App\Http\Controllers\KasirController;
 use App\Http\Controllers\KeranjangController;
+use App\Http\Controllers\LaporanRekapPenjualanController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
@@ -52,15 +54,16 @@ Route::controller(LoginController::class)->group(function () {
 
 Route::group(['middleware' => ['auth']], function () {
     Route::group(['middleware' => ['checkUserLogin:1']], function () {
-        Route::get('/admin', function () {
-            return Inertia::render('AdminPanel/Pages/Dashboard', [ 'user' => Auth::user(),]);
-        });
-       
+        // Route::get('/admin', function () {
+        //     return Inertia::render('AdminPanel/Pages/Dashboard', [ 'user' => Auth::user(),]);
+        // });
+        Route::get('/admin', [DashboardController::class, 'index']);
         Route::resource('/admin/kategori', KategoriBarangController::class);
         Route::resource('/admin/barang', BarangController::class);
         Route::resource('/admin/pesanan', PesananController::class);
         Route::resource('/admin/kasir', KasirController::class);
         Route::resource('/admin/keranjang', KeranjangController::class);
+        Route::resource('/admin/laporan-rekap-penjualan', LaporanRekapPenjualanController::class);
     });
 });
 

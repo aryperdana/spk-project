@@ -23,6 +23,9 @@ const SemuaProduk = ({ barang_data, user, keranjang }) => {
             nama_pemesan: user?.name,
             alamat_pengiriman: "",
             keterangan: "-",
+            tanggal: new Date().toISOString().slice(0, 10),
+            is_online: 1,
+            terkirim: 0,
             detail: [],
         });
 
