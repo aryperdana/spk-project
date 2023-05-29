@@ -35,14 +35,21 @@ export const options = {
     },
 };
 
-const labels = ["January", "February", "March", "April", "May", "June", "July"];
+const totalDays = new Date(
+    new Date().getFullYear(),
+    parseInt(new Date().getMonth() + 1),
+    0
+).getDate();
+
+const labels = Array.from({ length: totalDays }, (_, i) => i + 1);
+console.log(labels);
 
 export const data = {
     labels,
     datasets: [
         {
             label: "Dataset 1",
-            data: [12, 19, 3, 5, 2, 3],
+            data: [12, 19, 2, 5, 5, 3],
             borderColor: "rgb(255, 99, 132)",
             backgroundColor: "rgba(255, 99, 132, 0.5)",
         },
@@ -55,7 +62,7 @@ export const data = {
     ],
 };
 
-export default function Dashboard(props) {
+export default function Dashboard({ dataDetail }) {
     return (
         <>
             <MainLayout title="Dashboard" navbarTitle="Dashboard">

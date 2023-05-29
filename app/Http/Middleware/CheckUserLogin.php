@@ -21,11 +21,12 @@ class CheckUserLogin
         }
 
         $user = Auth::user();
-        if ($user->level == $rules) {
-            return $next($request);
+      
+        if ($user->level != $rules) {
 
-            return redirect('login')->with('error', 'Tidak Memiliki Hak Akses');
+            return redirect('login');
         }
+        // dd($rules);
 
         return $next($request);
     }

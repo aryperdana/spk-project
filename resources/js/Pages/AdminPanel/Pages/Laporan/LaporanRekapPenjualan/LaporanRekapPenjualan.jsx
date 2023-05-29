@@ -15,6 +15,7 @@ const LaporanRekapPenjualan = ({ laporan_data, barang_dropdown }) => {
         show: false,
         data: {},
     });
+    const [active, setActive] = useState(false);
     const [alertConfig, setAlertConfig] = useState({
         show: false,
         type: "error",
@@ -43,7 +44,7 @@ const LaporanRekapPenjualan = ({ laporan_data, barang_dropdown }) => {
 
     const submit = (e) => {
         e.preventDefault();
-
+        setActive(true);
         router.get(
             "laporan-rekap-penjualan",
             { ...data },
@@ -245,6 +246,15 @@ const LaporanRekapPenjualan = ({ laporan_data, barang_dropdown }) => {
                                             </td>
                                         </tr>
                                     ))
+                                ) : active ? (
+                                    <tr>
+                                        <td
+                                            colSpan="11"
+                                            className="text-center font-bold text-xl"
+                                        >
+                                            Data Tidak Ada
+                                        </td>
+                                    </tr>
                                 ) : (
                                     <tr>
                                         <td
