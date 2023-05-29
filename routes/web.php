@@ -28,20 +28,20 @@ use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return Inertia::render('LandingPage/Pages/Welcome');
-});
+})->middleware('access.without.login');
 
 // Route::get('/semua-produk', function () {
 //     return Inertia::render('LandingPage/Pages/SemuaProduk/SemuaProduk');
 // });
 
-Route::get('/semua-produk', [SemuaProdukController::class, 'index']);
-Route::get('/udeng', [SemuaProdukController::class, 'udeng']);
-Route::get('/saput', [SemuaProdukController::class, 'saput']);
-Route::get('/kamen', [SemuaProdukController::class, 'kamen']);
-Route::get('/baju', [SemuaProdukController::class, 'baju']);
+Route::get('/semua-produk', [SemuaProdukController::class, 'index'])->middleware('access.without.login');
+Route::get('/udeng', [SemuaProdukController::class, 'udeng'])->middleware('access.without.login');
+Route::get('/saput', [SemuaProdukController::class, 'saput'])->middleware('access.without.login');
+Route::get('/kamen', [SemuaProdukController::class, 'kamen'])->middleware('access.without.login');
+Route::get('/baju', [SemuaProdukController::class, 'baju'])->middleware('access.without.login');
 Route::get('/register', function () {
     return Inertia::render('Auth/Register', [ 'user' => Auth::user(),]);
-});
+})->middleware('access.without.login');
 Route::resource('/admin/user', UserController::class);
 
 

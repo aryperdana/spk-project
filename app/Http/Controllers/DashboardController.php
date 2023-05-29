@@ -17,14 +17,7 @@ class DashboardController extends Controller
     {
         $key = $request->key;
         $barang = Barang::all();
-        $laporan_rekap_penjualan = DetailPesanan::with('pesanan')->with('detail_barang')->whereHas('pesanan.detail_pesanan', function ($q) use ($request) {
-            $start_date = $request->start_date;
-            $end_date = $request->end_date;
-            $q->wherebetween('tanggal', [$start_date, $end_date])->where("is_online", $request->is_online);
-        })
-        ->where("id_barang", $request->id_barang)
-        ->orderBy('created_at', 'DESC')  
-        ->paginate(10);
-        return Inertia::render('AdminPanel/Pages/Dashboard', [ 'user' => Auth::user(),]);
+        $dataDetail = DetailPesanan::with('pesanan')->with('detail_barang')->get();
+        return Inertia::render('AdminPanel/Pages/Dashboard', [ 'user' => Auth::user(), 'dataDetail' => $dataDetail]);
     }
 }
