@@ -188,12 +188,27 @@ const TambahPesanan = ({ barang_dropdown, kategori_data }) => {
                             />
                             <div
                                 className="btn btn-primary btn-sm mt-9 p-0 w-16"
-                                onClick={() =>
+                                onClick={() => {
+                                    const sumWithQty =
+                                        parseInt(dataBarang.qty) *
+                                        parseInt(dataBarang.harga);
+
+                                    const subTotal = parseInt(
+                                        sumWithQty -
+                                            parseFloat(
+                                                dataBarang.diskon / 100
+                                            ) *
+                                                parseInt(sumWithQty)
+                                    );
+                                    const value = {
+                                        ...dataBarang,
+                                        sub_total: subTotal,
+                                    };
                                     setData({
                                         ...data,
-                                        detail: [...data.detail, dataBarang],
-                                    })
-                                }
+                                        detail: [...data.detail, value],
+                                    });
+                                }}
                             >
                                 <IoAddOutline className="text-xl" />
                             </div>

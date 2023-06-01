@@ -164,13 +164,25 @@ const SemuaProduk = ({ barang_data, user, keranjang }) => {
                                         <button
                                             className="btn w-full"
                                             onClick={() => {
+                                                const dataDetail = {
+                                                    ...val,
+                                                    sub_total: parseInt(
+                                                        val.harga -
+                                                            parseFloat(
+                                                                val.diskon / 100
+                                                            ) *
+                                                                parseInt(
+                                                                    val.harga
+                                                                )
+                                                    ),
+                                                };
                                                 setModalConfig({
                                                     show: true,
                                                     data: val,
                                                 });
                                                 setData({
                                                     ...data,
-                                                    detail: [val],
+                                                    detail: [dataDetail],
                                                 });
                                             }}
                                         >
@@ -230,15 +242,36 @@ const SemuaProduk = ({ barang_data, user, keranjang }) => {
                                             type="number"
                                             placeholder="Masukan jumlah barang"
                                             onChange={(val) => {
-                                                setData({
-                                                    ...data,
-                                                    detail: data.detail.map(
-                                                        (res) => ({
+                                                const dataDetail =
+                                                    data.detail.map((res) => {
+                                                        const sumWithQty =
+                                                            parseInt(
+                                                                val.target.value
+                                                            ) *
+                                                            parseInt(res.harga);
+
+                                                        const subTotal =
+                                                            parseInt(
+                                                                sumWithQty -
+                                                                    parseFloat(
+                                                                        res.diskon /
+                                                                            100
+                                                                    ) *
+                                                                        parseInt(
+                                                                            sumWithQty
+                                                                        )
+                                                            );
+                                                        return {
                                                             ...res,
                                                             qty: val.target
                                                                 .value,
-                                                        })
-                                                    ),
+                                                            sub_total: subTotal,
+                                                        };
+                                                    });
+
+                                                setData({
+                                                    ...data,
+                                                    detail: dataDetail,
                                                 });
                                                 setQty(val?.target?.value);
                                             }}
@@ -251,7 +284,7 @@ const SemuaProduk = ({ barang_data, user, keranjang }) => {
                                     />
                                 </div>
                             </div>
-                            <div className="flex justify-end gap-2">
+                            <div className="flex justify-end gap-2 mt-3">
                                 <div
                                     className="btn btn-secondary btn-outline btn-sm"
                                     onClick={() =>

@@ -83,7 +83,7 @@ const Pesanan = ({ pesanan_data }) => {
             0
         );
 
-    console.log(data);
+    console.log("bos", pesanan_data);
 
     return (
         <MainLayout title="Pesanan" navbarTitle="Pesanan">
@@ -309,6 +309,7 @@ const Pesanan = ({ pesanan_data }) => {
                                     />
                                 </div>
                             </div>
+                            {console.log(modalConfig)}
                             <b>Detail Barang</b>
                             <div className="overflow-x-auto ">
                                 <table className="table table-compact table-auto w-full">
