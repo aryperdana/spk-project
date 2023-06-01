@@ -20,14 +20,11 @@ class CheckUserLogin
             return redirect('login');
         }
 
-        $user = Auth::user();
+        // $user = Auth::user();
       
-        if ($user->level != $rules) {
-
-            return redirect('login');
-        }
-        // dd($rules);
-
+        // if ($user->level != $rules) {
+        //     return redirect('login');
+        // }
         return $next($request);
     }
 }

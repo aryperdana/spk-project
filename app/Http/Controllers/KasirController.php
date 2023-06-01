@@ -68,7 +68,8 @@ class KasirController extends Controller
             $detail = array(
                 'id_pesanan'   => $kasir->id,
                 'id_barang' => $value['id'],
-                'qty' => $value['qty']
+                'qty' => $value['qty'],
+                'sub_total' => $value['sub_total']
             );
 
             $detail = DetailPesanan::create($detail);

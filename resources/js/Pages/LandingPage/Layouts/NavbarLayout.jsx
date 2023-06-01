@@ -36,12 +36,20 @@ const ChartShoping = ({
         setData(event.target.name, event.target.value);
     };
     const checkboxHandler = (e, val) => {
+        const sumWithQty = parseInt(val.qty) * parseInt(val?.barang?.harga);
+
+        const subTotal = parseInt(
+            sumWithQty -
+                parseFloat(val.barang.diskon / 100) * parseInt(sumWithQty)
+        );
+
         const finalValues = {
             id_keranjang: val.id,
             id: val.id_barang,
             qty: val.qty,
             id_customer: val.id_customer,
             is_checkout: 1,
+            sub_total: subTotal,
         };
 
         if (e?.target?.checked) {

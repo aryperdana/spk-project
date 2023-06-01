@@ -26,9 +26,16 @@ export default function Welcome({ auth }) {
                                 Dimulai dari udeng, baju, saput, kamen semua
                                 ada.
                             </p>
-                            <button className="border border-neutral-100 px-4 py-2 rounded-sm hover:bg-black hover:border-none">
+                            <Link
+                                href={
+                                    Boolean(auth?.user)
+                                        ? "/semua-produk"
+                                        : "/register"
+                                }
+                                className="border border-neutral-100 px-4 py-2 rounded-sm hover:bg-black hover:border-none"
+                            >
                                 Shop Now
-                            </button>
+                            </Link>
                         </div>
                     </div>
                 </div>
@@ -48,12 +55,12 @@ export default function Welcome({ auth }) {
                             <h1 className="text-2xl text-white">
                                 Lihat Produk Terbaru
                             </h1>
-                            <a
+                            <Link
                                 className="mt-5 px-8 py-3 rounded-full btn btn-outline btn-primary duration-300"
-                                href="#"
+                                href="/produk-terbaru"
                             >
                                 Continue Shopping
-                            </a>
+                            </Link>
                         </div>
                     </div>
                     <div className="group relative">
