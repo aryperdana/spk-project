@@ -58,6 +58,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/admin', [DashboardController::class, 'index']);
         Route::resource('/admin/kategori', KategoriBarangController::class);
         Route::resource('/admin/barang', BarangController::class);
+        Route::post('/admin/barang/ubah/{id}', [BarangController::class, 'ubah']);
         Route::resource('/admin/pesanan', PesananController::class);
         Route::resource('/admin/kasir', KasirController::class);
         Route::resource('/admin/keranjang', KeranjangController::class);

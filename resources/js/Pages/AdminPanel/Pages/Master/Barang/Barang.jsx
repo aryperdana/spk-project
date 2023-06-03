@@ -5,7 +5,7 @@ import {
     Pagination,
     Textarea,
 } from "@/Pages/AdminPanel/Components";
-import { useForm } from "@inertiajs/react";
+import { useForm, router } from "@inertiajs/react";
 import React, { useState } from "react";
 import MainLayout from "../../../Layouts";
 import { HiOutlineTrash, HiOutlinePencilAlt } from "react-icons/hi";
@@ -65,7 +65,7 @@ const Barang = ({ barang_data, dropdown_kategori }) => {
             });
         }
         if (modalConfig.type === "update") {
-            put(route("barang.update", data.id), {
+            router.post(`barang/ubah/${data.id}`, data, {
                 onSuccess: () => {
                     setModalConfig({ ...modalConfig, show: false, type: "" });
                     setAlertConfig({
