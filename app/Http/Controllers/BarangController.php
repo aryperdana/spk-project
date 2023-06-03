@@ -167,4 +167,50 @@ class BarangController extends Controller
         $barang->delete();
         return to_route('barang.index');
     }
+
+
+    public function ubah(Request $request, $id)
+    {
+        // dd($request);  
+        $request->validate([
+            'nama_barang' => 'required',
+            'id_kategori_barang' => 'required',
+            'ukuran' => 'required',
+            'harga' => 'required',
+            'stok' => 'required',
+            'foto_barang' => 'mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ],
+        [
+            'nama_barang.required' => 'Nama Barang Tidak Boleh Kosong',
+            'id_kategori_barang.required' => 'Kategori Tidak Boleh Kosong',
+            'ukuran.required' => 'Ukuran Tidak Boleh Kosong',
+            'harga.required' => 'Harga Tidak Boleh Kosong',
+            'stok.required' => 'Stok Tidak Boleh Kosong',
+        ]);
+
+        if ($request->hasFile('foto_barang')) {
+            $image = $request->file('foto_barang')->store('uploads');
+        } else {
+            $image = '';
+        }
+
+        
+        $barang = Barang::find($id);
+        $path = $barang->foto_barang;
+
+        if ($path != null || $path != '') {
+            Storage::delete($path);
+        }
+        $barang->nama_barang = $request->nama_barang;
+        $barang->id_kategori_barang = $request->id_kategori_barang;
+        $barang->ukuran = $request->ukuran;
+        $barang->harga = $request->harga;
+        $barang->stok = $request->stok;
+        $barang->diskon = $request->diskon;
+        $barang->foto_barang = $image;
+        $barang->save();
+
+        return to_route('barang.index');
+    }
+
 }
