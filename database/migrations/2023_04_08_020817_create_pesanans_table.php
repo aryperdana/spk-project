@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('nama_pemesan');
             $table->string('alamat_pengiriman');
             $table->string('keterangan');
+            $table->string('id_customer')->nullable();
+            $table->string('foto_bukti')->nullable();
             $table->boolean('terkirim');
             $table->boolean('is_online');
             $table->timestamps();

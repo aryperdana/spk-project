@@ -8,6 +8,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
+
 class UserController extends Controller
 {
     /**
@@ -75,10 +76,29 @@ class UserController extends Controller
      * @param  \App\Models\User  $kategoriBarang
      * @return \Illuminate\Http\Response
      */
-    public function show(User $kategoriBarang)
+    public function show(User $id)
     {
-        //
+        $id_customer = Auth::user()->id;
+        $user = User::find($id_customer);
+      
+        return Inertia::render('AdminPanel/Pages/Master/User/User', [
+            'user_data' => $user,
+        ]);
+        
     }
+
+    public function profile(Request $request)
+    {
+        
+        $id_customer = Auth::user()->id;
+        $user = User::find($id_customer);
+        // dd($user);
+      
+        return Inertia::render('Auth/ProfileCustomer', [
+            'user_data' => $user,
+        ]);
+        
+    } 
 
     /**
      * Show the form for editing the specified resource.

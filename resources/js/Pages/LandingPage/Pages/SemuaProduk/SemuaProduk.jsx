@@ -10,11 +10,22 @@ const SemuaProduk = ({ barang_data, user, keranjang }) => {
         show: false,
         data: {},
     });
+    const [modalConfigConfirm, setModalConfigConfirm] = useState({
+        show: false,
+        data: {},
+    });
     const [alertConfig, setAlertConfig] = useState({
         show: false,
         type: "error",
         text: "",
     });
+
+    const dataUkuran = [
+        { value: "S", label: "S" },
+        { value: "M", label: "M" },
+        { value: "L", label: "L" },
+        { value: "XL", label: "XL" },
+    ];
     const [isLoading, setIsLoading] = useState(false);
     const [qty, setQty] = useState(0);
 
@@ -26,6 +37,8 @@ const SemuaProduk = ({ barang_data, user, keranjang }) => {
             tanggal: new Date().toISOString().slice(0, 10),
             is_online: 1,
             terkirim: 0,
+            ukuran: "",
+            foto_bukti: "",
             detail: [],
         });
 
@@ -44,6 +57,7 @@ const SemuaProduk = ({ barang_data, user, keranjang }) => {
                     text: "Barang dipesan",
                 });
                 setModalConfig({ show: false });
+                setModalConfigConfirm({ show: false });
                 reset();
             },
             onError: () => {},
@@ -58,6 +72,7 @@ const SemuaProduk = ({ barang_data, user, keranjang }) => {
             id_barang: modalConfig?.data?.id,
             id_customer: user?.id,
             qty: qty,
+            ukuran: data.ukuran,
         };
 
         router.post("/admin/keranjang", finalValues, {
@@ -200,6 +215,8 @@ const SemuaProduk = ({ barang_data, user, keranjang }) => {
                 className="modal-toggle"
                 checked={modalConfig.show}
             />
+
+            {/* Modal Belanja */}
             <div className="modal">
                 <div className="modal-box w-11/12 max-w-5xl">
                     <div className="modal-middle mt-3">
@@ -277,11 +294,37 @@ const SemuaProduk = ({ barang_data, user, keranjang }) => {
                                             }}
                                         />
                                     </div>
+
                                     <Textarea
                                         placeholder="Masukan alamat pengiriman"
                                         name="alamat_pengiriman"
                                         onChange={handleOnChange}
                                     />
+                                    <div className="mt-2">
+                                        <span>Ukuran</span>
+                                    </div>
+                                    <div className="flex gap-5">
+                                        {dataUkuran.map((val) => (
+                                            <div className="form-control">
+                                                <label className="label cursor-pointer">
+                                                    <span className="label-text mr-4">
+                                                        {val.label}
+                                                    </span>
+                                                    <input
+                                                        type="radio"
+                                                        name="radio-10"
+                                                        className="radio"
+                                                        onChange={() =>
+                                                            setData({
+                                                                ...data,
+                                                                ukuran: val.value,
+                                                            })
+                                                        }
+                                                    />
+                                                </label>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                             <div className="flex justify-end gap-2 mt-3">
@@ -303,6 +346,125 @@ const SemuaProduk = ({ barang_data, user, keranjang }) => {
                                     }
                                 >
                                     Tambah Ke Keranjang
+                                </div>
+                                <div
+                                    className="btn btn-primary btn-sm"
+                                    onClick={() =>
+                                        setModalConfigConfirm({
+                                            ...modalConfigConfirm,
+                                            show: true,
+                                            data: modalConfig.data,
+                                        })
+                                    }
+                                >
+                                    Check Out
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            {/* Modal Konfirmasi Pembayaran */}
+            <input
+                type="checkbox"
+                className="modal-toggle"
+                checked={modalConfigConfirm.show}
+            />
+            <div className="modal">
+                <div className="modal-box w-11/12 max-w-5xl">
+                    <div className="modal-middle mt-3">
+                        <form onSubmit={handleSubmit}>
+                            <div className="grid grid-cols-2 gap-3">
+                                <img
+                                    src={`http://127.0.0.1:8000/storage/${modalConfigConfirm?.data?.foto_barang}`}
+                                />
+                                <div>
+                                    <div className="text-lg">
+                                        <b>
+                                            {
+                                                modalConfigConfirm?.data
+                                                    ?.nama_barang
+                                            }
+                                        </b>
+                                    </div>
+                                    <div className="mb-2">
+                                        {new Intl.NumberFormat("id-ID", {
+                                            style: "currency",
+                                            currency: "IDR",
+                                        }).format(
+                                            modalConfigConfirm?.data?.harga
+                                        )}
+                                    </div>
+                                    <div className="flex justify-start gap-2">
+                                        <div className="card-actions justify-end">
+                                            <div className="badge badge-outline badge-primary">
+                                                {
+                                                    modalConfigConfirm?.data
+                                                        ?.kategori
+                                                        ?.nama_kategori_barang
+                                                }
+                                            </div>
+                                        </div>
+                                        {modalConfigConfirm?.data?.diskon >
+                                        0 ? (
+                                            <div className="card-actions justify-end">
+                                                <div className="badge badge-outline badge-error">
+                                                    {
+                                                        modalConfigConfirm?.data
+                                                            ?.diskon
+                                                    }
+                                                    %
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            ""
+                                        )}
+                                    </div>
+                                    <div className="mt-5">
+                                        <b>Metode Pembayaran</b>
+                                        <br />
+                                        <span>
+                                            Pembayaran bisa dilakukan dengan
+                                            transfer ke bank BCA
+                                        </span>
+                                        <br />
+                                        <span>No Rekening: 137812210</span>
+                                    </div>
+                                    <hr />
+                                    <div className="form-control w-full mt-3">
+                                        <label className="label">
+                                            <span className="label-text">
+                                                Foto Bukti Pembayaran
+                                            </span>
+                                        </label>
+                                        <input
+                                            type="file"
+                                            className="file-input file-input-sm file-input-bordered w-full"
+                                            name="foto_bulti"
+                                            onChange={(e) =>
+                                                setData({
+                                                    ...data,
+                                                    foto_bukti:
+                                                        e.target.files[0],
+                                                })
+                                            }
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="flex justify-end gap-2 mt-3">
+                                <div
+                                    className="btn btn-secondary btn-outline btn-sm"
+                                    onClick={() =>
+                                        setModalConfigConfirm({
+                                            ...modalConfigConfirm,
+                                            show: false,
+                                            data: {},
+                                        })
+                                    }
+                                >
+                                    Batal
                                 </div>
                                 <button className="btn btn-primary btn-sm">
                                     Check Out

@@ -41,6 +41,7 @@ class KeranjangController extends Controller
         $keranjang->id_barang = $request->id_barang;
         $keranjang->id_customer = $request->id_customer;
         $keranjang->qty = $request->qty;
+        $keranjang->ukuran = $request->ukuran;
         $keranjang->save();
 
         

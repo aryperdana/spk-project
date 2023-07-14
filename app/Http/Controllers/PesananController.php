@@ -27,6 +27,16 @@ class PesananController extends Controller
         ]);
     }
 
+    public function history(Request $request)
+    {
+        $key = $request->key;
+        $pesanan = Pesanan::with('detail_pesanan')->orderBy('created_at', 'DESC')->where('is_online', 1)->where('id_customer', Auth::user()->id)->where('nama_pemesan', 'LIKE', '%' . $key . '%')  
+            ->paginate(10);
+        return Inertia::render('LandingPage/Pages/History', [
+            'pesanan_data' => $pesanan,
+        ]);
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -52,6 +62,12 @@ class PesananController extends Controller
             'alamat_pengiriman.required' => 'Alamat Tidak Boleh Kosong',
         ]);
 
+        if ($request->hasFile('foto_bukti')) {
+            $image = $request->file('foto_bukti')->store('uploads');
+        } else {
+            $image = '';
+        }
+
 
         $date = $request->tanggal;
  
@@ -71,6 +87,8 @@ class PesananController extends Controller
         $pesanan->keterangan = $request->keterangan;
         $pesanan->is_online = $request->is_online;
         $pesanan->terkirim = $request->terkirim;
+        $pesanan->foto_bukti = $image;
+        $pesanan->id_customer = Auth::user()->id;
         $pesanan->save();
 
 
@@ -79,7 +97,8 @@ class PesananController extends Controller
                 'id_pesanan'   => $pesanan->id,
                 'id_barang' => $value['id'],
                 'qty' => $value['qty'],
-                'sub_total' => $value['sub_total']
+                'sub_total' => $value['sub_total'],
+                'ukuran' => $request->ukuran,
             );
 
             $detail = DetailPesanan::create($detail);

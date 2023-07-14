@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_barang');
             $table->string('id_customer');
             $table->string('qty');
+            $table->string('ukuran');
             $table->boolean('is_checkout')->nullable()->default(false);
             $table->foreign('id_barang')->references('id')->on('barangs')->onDelete('cascade');
             $table->timestamps();
