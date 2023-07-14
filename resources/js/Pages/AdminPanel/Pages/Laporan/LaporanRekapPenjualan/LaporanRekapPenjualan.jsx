@@ -229,7 +229,18 @@ const LaporanRekapPenjualan = ({ laporan_data, barang_dropdown }) => {
                                                 )}
                                             </td>
                                             <td>{val.detail_barang.diskon}</td>
-                                            <td>{val.detail_barang.diskon}</td>
+                                            <td>
+                                                {rupiah(
+                                                    parseInt(
+                                                        val?.detail_barang
+                                                            ?.harga ?? 0
+                                                    ) *
+                                                        parseInt(
+                                                            val.detail_barang
+                                                                .diskon ?? 0
+                                                        )
+                                                )}
+                                            </td>
                                             <td className="text-center">
                                                 <button
                                                     className={`btn btn-outline ${

@@ -40,6 +40,8 @@ Route::get('/udeng', [SemuaProdukController::class, 'udeng'])->middleware('acces
 Route::get('/saput', [SemuaProdukController::class, 'saput'])->middleware('access.without.login');
 Route::get('/kamen', [SemuaProdukController::class, 'kamen'])->middleware('access.without.login');
 Route::get('/baju', [SemuaProdukController::class, 'baju'])->middleware('access.without.login');
+Route::get('/profile-customer/{id}', [UserController::class, 'profile'])->middleware('access.without.login');
+Route::get('/history', [PesananController::class, 'history'])->middleware('access.without.login');
 Route::get('/register', function () {
     return Inertia::render('Auth/Register', [ 'user' => Auth::user(),]);
 })->middleware('access.without.login');

@@ -2,12 +2,13 @@ import { Link, Head } from "@inertiajs/react";
 import { FooterLayout, NavbarLayout } from "../Layouts";
 
 export default function Welcome({ auth }) {
+    console.log(auth);
     return (
         <>
             <Head title="NAKTRUNALAHNE" />
             <div className="w-full py-8">
                 {/* Navbar section */}
-                <NavbarLayout user={auth?.user?.name} />
+                <NavbarLayout user={auth?.user?.name} userId={auth?.user?.id} />
                 {/* Hero Section */}
                 <div
                     className="hero h-96 max-w-7xl mx-auto my-4"

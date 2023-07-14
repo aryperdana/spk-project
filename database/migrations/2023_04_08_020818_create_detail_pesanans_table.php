@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_barang');
             $table->string('qty');
             $table->string('sub_total');
+            $table->string('ukuran')->nullable();
             $table->foreign('id_pesanan')->references('id')->on('pesanans')->onDelete('cascade');
             $table->foreign('id_barang')->references('id')->on('barangs')->onDelete('cascade');
             $table->timestamps();

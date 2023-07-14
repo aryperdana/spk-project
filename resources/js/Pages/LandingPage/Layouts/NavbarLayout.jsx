@@ -12,6 +12,10 @@ const ChartShoping = ({
     setModalConfig,
     modalConfig,
 }) => {
+    const [modalConfigConfirm, setModalConfigConfirm] = useState({
+        data: {},
+        show: false,
+    });
     const { data, setData, reset, post } = useForm({
         nama_pemesan: name,
         alamat_pengiriman: "",
@@ -19,8 +23,11 @@ const ChartShoping = ({
         tanggal: new Date().toISOString().slice(0, 10),
         is_online: 1,
         terkirim: 0,
+        ukuran: "",
+        foto_bukti: "",
         detail: [],
     });
+
     const total =
         dataKeranjang &&
         dataKeranjang.reduce(
@@ -35,6 +42,7 @@ const ChartShoping = ({
     const handleOnChange = (event) => {
         setData(event.target.name, event.target.value);
     };
+
     const checkboxHandler = (e, val) => {
         const sumWithQty = parseInt(val.qty) * parseInt(val?.barang?.harga);
 
@@ -55,6 +63,7 @@ const ChartShoping = ({
         if (e?.target?.checked) {
             setData({
                 ...data,
+                ukuran: val?.ukuran,
                 detail: [...data.detail, finalValues],
             });
         }
@@ -91,12 +100,11 @@ const ChartShoping = ({
                     type: "success",
                     text: "Barang dipesan",
                 });
+                setModalConfigConfirm({ show: false });
                 reset();
             },
         });
     };
-
-    console.log(data);
 
     return (
         <div>
@@ -246,9 +254,85 @@ const ChartShoping = ({
                             >
                                 Batal
                             </label>
-                            <button className="btn btn-sm">Checkout</button>
+                            <div
+                                className="btn btn-sm"
+                                onClick={() =>
+                                    setModalConfigConfirm({
+                                        data: {},
+                                        show: true,
+                                    })
+                                }
+                            >
+                                Checkout
+                            </div>
                         </div>
                     </form>
+                </div>
+            </div>
+            {/* Modal Konfirmasi Pembayaran */}
+            <input
+                type="checkbox"
+                className="modal-toggle"
+                checked={modalConfigConfirm.show}
+            />
+            <div className="modal">
+                <div className="modal-box w-11/12 max-w-5xl">
+                    <div className="modal-middle mt-3">
+                        <form onSubmit={handleSubmit}>
+                            <div className="grid gap-3">
+                                <div>
+                                    <b>Metode Pembayaran</b>
+                                    <hr />
+                                    <div>
+                                        <br />
+                                        <span>
+                                            Pembayaran bisa dilakukan dengan
+                                            transfer ke bank BCA
+                                        </span>
+                                        <br />
+                                        <span>No Rekening: 137812210</span>
+                                    </div>
+
+                                    <div className="form-control w-full mt-3">
+                                        <label className="label">
+                                            <span className="label-text">
+                                                Foto Bukti Pembayaran
+                                            </span>
+                                        </label>
+                                        <input
+                                            type="file"
+                                            className="file-input file-input-sm file-input-bordered w-full"
+                                            name="foto_bulti"
+                                            onChange={(e) =>
+                                                setData({
+                                                    ...data,
+                                                    foto_bukti:
+                                                        e.target.files[0],
+                                                })
+                                            }
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="flex justify-end gap-2 mt-3">
+                                <div
+                                    className="btn btn-secondary btn-outline btn-sm"
+                                    onClick={() =>
+                                        setModalConfigConfirm({
+                                            ...modalConfigConfirm,
+                                            show: false,
+                                            data: {},
+                                        })
+                                    }
+                                >
+                                    Batal
+                                </div>
+                                <button className="btn btn-primary btn-sm">
+                                    Check Out
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -260,8 +344,10 @@ export const NavbarLayout = ({
     dataKeranjang,
     setAlertConfig,
     alertConfig,
+    userId,
 }) => {
     const [modalConfig, setModalConfig] = useState({ show: false });
+
     console.log(user);
     return (
         <div>
@@ -288,6 +374,9 @@ export const NavbarLayout = ({
                             </li>
                             <li>
                                 <Link href="baju">Baju</Link>
+                            </li>
+                            <li>
+                                <Link href="history">History</Link>
                             </li>
                         </ul>
                     </div>
@@ -342,7 +431,16 @@ export const NavbarLayout = ({
                                         <Link href="register">Register</Link>
                                     </>
                                 )}
-                                {user && <Link href="logout">Logout</Link>}
+                                {user && (
+                                    <>
+                                        <Link
+                                            href={"profile-customer/" + userId}
+                                        >
+                                            Profile
+                                        </Link>
+                                        <Link href="logout">Logout</Link>
+                                    </>
+                                )}
                             </li>
                         </ul>
                     </div>
