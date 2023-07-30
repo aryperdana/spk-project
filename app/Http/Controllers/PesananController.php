@@ -88,6 +88,7 @@ class PesananController extends Controller
         $pesanan->is_online = $request->is_online;
         $pesanan->terkirim = $request->terkirim;
         $pesanan->foto_bukti = $image;
+        $pesanan->status_pembayaran = 1;
         $pesanan->id_customer = Auth::user()->id;
         $pesanan->save();
 

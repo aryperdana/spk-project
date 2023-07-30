@@ -36,6 +36,7 @@ Route::get('/', function () {
 
 Route::get('/semua-produk', [SemuaProdukController::class, 'index'])->middleware('access.without.login');
 Route::get('/produk-terbaru', [SemuaProdukController::class, 'produkTerbaru'])->middleware('access.without.login');
+Route::get('/diskon-produk', [SemuaProdukController::class, 'produkDiskon'])->middleware('access.without.login');
 Route::get('/udeng', [SemuaProdukController::class, 'udeng'])->middleware('access.without.login');
 Route::get('/saput', [SemuaProdukController::class, 'saput'])->middleware('access.without.login');
 Route::get('/kamen', [SemuaProdukController::class, 'kamen'])->middleware('access.without.login');

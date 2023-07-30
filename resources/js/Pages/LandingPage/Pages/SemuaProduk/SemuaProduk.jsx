@@ -39,6 +39,7 @@ const SemuaProduk = ({ barang_data, user, keranjang }) => {
             terkirim: 0,
             ukuran: "",
             foto_bukti: "",
+            status_pembayaran: 1,
             detail: [],
         });
 
