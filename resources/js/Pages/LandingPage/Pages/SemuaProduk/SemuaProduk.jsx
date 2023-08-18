@@ -39,7 +39,7 @@ const SemuaProduk = ({ barang_data, user, keranjang }) => {
             terkirim: 0,
             ukuran: "",
             foto_bukti: "",
-            status_pembayaran: 1,
+            status_pembayaran: 0,
             detail: [],
         });
 
@@ -448,6 +448,7 @@ const SemuaProduk = ({ barang_data, user, keranjang }) => {
                                                     ...data,
                                                     foto_bukti:
                                                         e.target.files[0],
+                                                    status_pembayaran: 1,
                                                 })
                                             }
                                         />
