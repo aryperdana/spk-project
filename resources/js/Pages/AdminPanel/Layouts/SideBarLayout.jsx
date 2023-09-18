@@ -7,6 +7,7 @@ import {
     AiOutlineShoppingCart,
 } from "react-icons/ai";
 import { BiCategory, BiUser } from "react-icons/bi";
+import { IoServer, IoServerOutline } from "react-icons/io5";
 
 export const SideBarLayout = () => {
     return (
@@ -16,7 +17,7 @@ export const SideBarLayout = () => {
             <ul className="menu menu-compact p-4 w-72 bg-base-100 text-base-content">
                 <li className="mb-8">
                     <a className="btn btn-ghost normal-case text-xl">
-                        NAKTRUNALAHNE !!!
+                        Decision Support Systems
                     </a>
                 </li>
                 <li>
@@ -32,33 +33,21 @@ export const SideBarLayout = () => {
                     </Link>
                 </li>
                 <li>
-                    <Link href="/admin/kategori">
-                        <BiCategory />
-                        Kategori
+                    <Link href="/alternatif">
+                        <IoServerOutline />
+                        Alternatif
                     </Link>
                 </li>
                 <li>
-                    <Link href="/admin/barang">
-                        <AiOutlineDatabase />
-                        Barang
+                    <Link href="/kriteria">
+                        <IoServerOutline />
+                        Kriteria
                     </Link>
                 </li>
                 <li>
-                    <Link href="/admin/kasir">
-                        <AiOutlineShoppingCart />
-                        Penjualan
-                    </Link>
-                </li>
-                <li>
-                    <Link href="/admin/pesanan">
-                        <AiOutlineShoppingCart />
-                        Pesanan
-                    </Link>
-                </li>
-                <li>
-                    <Link href="/admin/laporan-rekap-penjualan">
-                        <AiOutlineShoppingCart />
-                        Rekap Penjualan
+                    <Link href="/sub-kriteria">
+                        <IoServerOutline />
+                        Sub Kriteria
                     </Link>
                 </li>
             </ul>

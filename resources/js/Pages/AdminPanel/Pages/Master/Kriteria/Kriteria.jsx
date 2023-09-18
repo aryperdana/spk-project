@@ -10,7 +10,7 @@ import React, { useState } from "react";
 import MainLayout from "../../../Layouts";
 import { HiOutlineTrash, HiOutlinePencilAlt } from "react-icons/hi";
 
-const Kategori = ({ kategori_data }) => {
+const Kriteria = ({ alternatif_data }) => {
     const [modalConfig, setModalConfig] = useState({
         type: "",
         show: false,
@@ -20,6 +20,11 @@ const Kategori = ({ kategori_data }) => {
         type: "error",
         text: "",
     });
+
+    const alternatifData = [
+        { value: "pelinggih", label: "Pelinggih" },
+        { value: "candi", label: "Candi" },
+    ];
 
     const {
         data,
@@ -32,19 +37,23 @@ const Kategori = ({ kategori_data }) => {
         delete: destroy,
     } = useForm({
         id: "",
-        nama_kategori_barang: "",
-        keterangan: "",
+        kode: "",
+        nama_kriteria: "",
+        bobot_kriteria: "",
+        priority: "",
     });
-    console.log(data);
 
     const handleOnChange = (event) => {
         setData(event.target.name, event.target.value);
+    };
+    const handleOnChangeBobot = (event) => {
+        setData(event.target.name, parseFloat(event.target.value));
     };
 
     const submit = (e) => {
         e.preventDefault();
         if (modalConfig.type === "add") {
-            post(route("kategori.store"), {
+            post(route("kriteria.store"), {
                 onSuccess: () => {
                     setModalConfig({ ...modalConfig, show: false, type: "" });
                     setAlertConfig({
@@ -60,7 +69,7 @@ const Kategori = ({ kategori_data }) => {
             });
         }
         if (modalConfig.type === "update") {
-            put(route("kategori.update", data.id), {
+            put(route("kriteria.update", data.id), {
                 onSuccess: () => {
                     setModalConfig({ ...modalConfig, show: false, type: "" });
                     setAlertConfig({
@@ -78,7 +87,7 @@ const Kategori = ({ kategori_data }) => {
     };
 
     const deleteSubmit = (id) => {
-        destroy(route("kategori.destroy", id), {
+        destroy(route("kriteria.destroy", id), {
             onSuccess: () => {
                 setAlertConfig({
                     ...alertConfig,
@@ -90,10 +99,8 @@ const Kategori = ({ kategori_data }) => {
         });
     };
 
-    console.log(kategori_data.data.length);
-
     return (
-        <MainLayout title="Kategori" navbarTitle="Kategori">
+        <MainLayout title="Kriteria" navbarTitle="Kriteria">
             {alertConfig.show && (
                 <Alert type={alertConfig.type} text={alertConfig.text} />
             )}
@@ -128,13 +135,15 @@ const Kategori = ({ kategori_data }) => {
                                 <tr>
                                     <th className="text-center">No</th>
                                     <th className="text-center">Aksi</th>
-                                    <th className="text-center">Kategori</th>
-                                    <th className="text-center">Keterangan</th>
+                                    <th className="text-center">Kode</th>
+                                    <th className="text-center">Nama</th>
+                                    <th className="text-center">Bobot</th>
+                                    <th className="text-center">Priority</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {kategori_data.data.length > 0 ? (
-                                    kategori_data.data.map((val, ind) => (
+                                {alternatif_data.data.length > 0 ? (
+                                    alternatif_data.data.map((val, ind) => (
                                         <tr>
                                             <td className="w-10">{ind + 1}</td>
                                             <td className="w-10">
@@ -148,10 +157,13 @@ const Kategori = ({ kategori_data }) => {
                                                                 type: "update",
                                                             });
                                                             setData({
-                                                                nama_kategori_barang:
-                                                                    val.nama_kategori_barang,
-                                                                keterangan:
-                                                                    val.keterangan,
+                                                                nama_kriteria:
+                                                                    val.nama_kriteria,
+                                                                kode: val.kode,
+                                                                bobot_kriteria:
+                                                                    val.bobot_kriteria,
+                                                                priority:
+                                                                    val.priority,
                                                                 id: val.id,
                                                             });
                                                         }}
@@ -170,8 +182,10 @@ const Kategori = ({ kategori_data }) => {
                                                     </button>
                                                 </div>
                                             </td>
-                                            <td>{val.nama_kategori_barang}</td>
-                                            <td>{val.keterangan}</td>
+                                            <td>{val.kode}</td>
+                                            <td>{val.nama_kriteria}</td>
+                                            <td>{val.bobot_kriteria}</td>
+                                            <td>{val.priority}</td>
                                         </tr>
                                     ))
                                 ) : (
@@ -188,11 +202,11 @@ const Kategori = ({ kategori_data }) => {
                         </table>
                     </div>
                     <div className="flex justify-center">
-                        {kategori_data.total > 10 && (
+                        {alternatif_data.total > 10 && (
                             <Pagination
-                                next={kategori_data?.next_page_url}
-                                prev={kategori_data?.prev_page_url}
-                                curr={kategori_data?.current_page}
+                                next={alternatif_data?.next_page_url}
+                                prev={alternatif_data?.prev_page_url}
+                                curr={alternatif_data?.current_page}
                             />
                         )}
                     </div>
@@ -208,26 +222,46 @@ const Kategori = ({ kategori_data }) => {
                 <div className="modal-box">
                     <div className="font-bold mb-3">
                         {modalConfig.type === "add" ? "Tambah" : "Ubah"} Data
-                        Kategori
+                        Kriteria
                     </div>
                     <hr />
                     <div className="modal-middle mt-3">
                         <form onSubmit={submit}>
                             <Input
                                 type="text"
-                                label="Kategori"
-                                name="nama_kategori_barang"
-                                placeholder="Masukan Kategori"
+                                label="Kode"
+                                name="kode"
+                                placeholder="Masukan Kriteria"
                                 onChange={handleOnChange}
-                                value={data?.nama_kategori_barang}
-                                errorText={errors.nama_kategori_barang}
+                                value={data?.kode}
+                                errorText={errors.kode}
                             />
-                            <Textarea
-                                label="Keterangan"
-                                placeholder="Masukan Keterangan"
-                                name="keterangan"
+                            <Input
+                                type="text"
+                                label="Kriteria"
+                                name="nama_kriteria"
+                                placeholder="Masukan Kriteria"
                                 onChange={handleOnChange}
-                                value={data.keterangan}
+                                value={data?.nama_kriteria}
+                                errorText={errors.nama_kriteria}
+                            />
+                            <Input
+                                type="number"
+                                label="Bobot"
+                                name="bobot_kriteria"
+                                placeholder="Masukan Bobot"
+                                onChange={handleOnChangeBobot}
+                                value={data?.bobot_kriteria}
+                                errorText={errors.bobot_kriteria}
+                            />
+                            <Input
+                                type="number"
+                                label="Priority"
+                                name="priority"
+                                placeholder="Masukan Priority"
+                                onChange={handleOnChange}
+                                value={data?.priority}
+                                errorText={errors.priority}
                             />
 
                             <div className="modal-action">
@@ -260,4 +294,4 @@ const Kategori = ({ kategori_data }) => {
     );
 };
 
-export default Kategori;
+export default Kriteria;
