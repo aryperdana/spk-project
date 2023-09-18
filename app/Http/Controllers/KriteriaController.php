@@ -18,7 +18,7 @@ class KriteriaController extends Controller
             ::orderBy('created_at', 'DESC')->where('nama_kriteria', 'LIKE', '%' . $key . '%')
             ->paginate(10);
         return Inertia::render('AdminPanel/Pages/Master/Kriteria/Kriteria', [
-            'alternatif_data' => $kriteria,
+            'kriteria_data' => $kriteria,
         ]);
     }
 
@@ -50,7 +50,6 @@ class KriteriaController extends Controller
 
         $kriteria = new Kriteria;
         $kriteria->nama_kriteria = $request->nama_kriteria;
-        $kriteria->bobot_kriteria = $request->bobot_kriteria;
         $kriteria->kode = $request->kode;
         $kriteria->priority = $request->priority;
         $kriteria->save();
@@ -97,7 +96,6 @@ class KriteriaController extends Controller
         
         $kriteria = Kriteria::find($id);
         $kriteria->nama_kriteria = $request->nama_kriteria;
-        $kriteria->bobot_kriteria = $request->bobot_kriteria;
         $kriteria->kode = $request->kode;
         $kriteria->priority = $request->priority;
         $kriteria->save();

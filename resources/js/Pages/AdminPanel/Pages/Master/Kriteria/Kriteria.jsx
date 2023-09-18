@@ -10,7 +10,7 @@ import React, { useState } from "react";
 import MainLayout from "../../../Layouts";
 import { HiOutlineTrash, HiOutlinePencilAlt } from "react-icons/hi";
 
-const Kriteria = ({ alternatif_data }) => {
+const Kriteria = ({ kriteria_data }) => {
     const [modalConfig, setModalConfig] = useState({
         type: "",
         show: false,
@@ -21,11 +21,9 @@ const Kriteria = ({ alternatif_data }) => {
         text: "",
     });
 
-    const alternatifData = [
-        { value: "pelinggih", label: "Pelinggih" },
-        { value: "candi", label: "Candi" },
-    ];
+    const jumlahKriteria = kriteria_data?.data?.length;
 
+    console.log(jumlahKriteria);
     const {
         data,
         setData,
@@ -46,8 +44,31 @@ const Kriteria = ({ alternatif_data }) => {
     const handleOnChange = (event) => {
         setData(event.target.name, event.target.value);
     };
+
+    const calculateSum = (arr, priority) => {
+        if (priority < 1) {
+            return 0;
+        }
+
+        return arr.reduce((accumulator, currentNumber, index) => {
+            if (index + 1 >= priority) {
+                return accumulator + 1 / currentNumber?.priority;
+            }
+            return accumulator;
+        }, 0);
+    };
+
     const handleOnChangeBobot = (event) => {
-        setData(event.target.name, parseFloat(event.target.value));
+        setData({
+            ...data,
+            bobot_kriteria:
+                (1 / parseFloat(jumlahKriteria + 1)) *
+                calculateSum(
+                    kriteria_data?.data,
+                    parseFloat(event.target.value)
+                ),
+            priority: event.target.value,
+        });
     };
 
     const submit = (e) => {
@@ -142,9 +163,16 @@ const Kriteria = ({ alternatif_data }) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {alternatif_data.data.length > 0 ? (
-                                    alternatif_data.data.map((val, ind) => (
+                                {kriteria_data.data.length > 0 ? (
+                                    kriteria_data.data.map((val, ind) => (
                                         <tr>
+                                            {console.log(
+                                                "cok",
+                                                calculateSum(
+                                                    kriteria_data?.data,
+                                                    parseFloat(val.priority)
+                                                )
+                                            )}
                                             <td className="w-10">{ind + 1}</td>
                                             <td className="w-10">
                                                 <div className="btn-group">
@@ -161,7 +189,16 @@ const Kriteria = ({ alternatif_data }) => {
                                                                     val.nama_kriteria,
                                                                 kode: val.kode,
                                                                 bobot_kriteria:
-                                                                    val.bobot_kriteria,
+                                                                    (1 /
+                                                                        parseFloat(
+                                                                            jumlahKriteria
+                                                                        )) *
+                                                                    calculateSum(
+                                                                        kriteria_data?.data,
+                                                                        parseFloat(
+                                                                            val.priority
+                                                                        )
+                                                                    ),
                                                                 priority:
                                                                     val.priority,
                                                                 id: val.id,
@@ -184,14 +221,23 @@ const Kriteria = ({ alternatif_data }) => {
                                             </td>
                                             <td>{val.kode}</td>
                                             <td>{val.nama_kriteria}</td>
-                                            <td>{val.bobot_kriteria}</td>
+                                            <td>
+                                                {(1 /
+                                                    parseFloat(
+                                                        jumlahKriteria
+                                                    )) *
+                                                    calculateSum(
+                                                        kriteria_data?.data,
+                                                        parseFloat(val.priority)
+                                                    )}
+                                            </td>
                                             <td>{val.priority}</td>
                                         </tr>
                                     ))
                                 ) : (
                                     <tr>
                                         <td
-                                            colSpan="5"
+                                            colSpan="7"
                                             className="text-center font-bold text-xl"
                                         >
                                             Tidak Ada Data
@@ -202,11 +248,11 @@ const Kriteria = ({ alternatif_data }) => {
                         </table>
                     </div>
                     <div className="flex justify-center">
-                        {alternatif_data.total > 10 && (
+                        {kriteria_data.total > 10 && (
                             <Pagination
-                                next={alternatif_data?.next_page_url}
-                                prev={alternatif_data?.prev_page_url}
-                                curr={alternatif_data?.current_page}
+                                next={kriteria_data?.next_page_url}
+                                prev={kriteria_data?.prev_page_url}
+                                curr={kriteria_data?.current_page}
                             />
                         )}
                     </div>
@@ -250,7 +296,8 @@ const Kriteria = ({ alternatif_data }) => {
                                 label="Bobot"
                                 name="bobot_kriteria"
                                 placeholder="Masukan Bobot"
-                                onChange={handleOnChangeBobot}
+                                disabled
+                                // onChange={handleOnChangeBobot}
                                 value={data?.bobot_kriteria}
                                 errorText={errors.bobot_kriteria}
                             />
@@ -259,7 +306,10 @@ const Kriteria = ({ alternatif_data }) => {
                                 label="Priority"
                                 name="priority"
                                 placeholder="Masukan Priority"
-                                onChange={handleOnChange}
+                                onChange={(e) => {
+                                    // handleOnChange(e);
+                                    handleOnChangeBobot(e);
+                                }}
                                 value={data?.priority}
                                 errorText={errors.priority}
                             />
