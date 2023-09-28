@@ -50,6 +50,12 @@ export const SideBarLayout = () => {
                         Sub Kriteria
                     </Link>
                 </li>
+                <li>
+                    <Link href="/atribut-kriteria">
+                        <IoServerOutline />
+                        Atribut Kriteria
+                    </Link>
+                </li>
             </ul>
         </div>
     );
