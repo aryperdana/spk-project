@@ -4,6 +4,8 @@ use App\Http\Controllers\AlternatifController;
 use App\Http\Controllers\KriteriaController;
 use App\Http\Controllers\SubKriteriaController;
 use App\Http\Controllers\AtributKriteriaController;
+use App\Http\Controllers\ProjectsController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -36,10 +38,12 @@ Route::controller(LoginController::class)->group(function () {
 Route::group(['middleware' => ['auth']], function () {
     Route::group(['middleware' => ['checkUserLogin:1']], function () {
         Route::get('/admin', [DashboardController::class, 'index']);
+        Route::resource('/user', UserController::class);
         Route::resource('/alternatif', AlternatifController::class);
         Route::resource('/kriteria', KriteriaController::class);
         Route::resource('/sub-kriteria', SubKriteriaController::class);
         Route::resource('/atribut-kriteria', AtributKriteriaController::class);
+        Route::resource('/projects', ProjectsController::class);
     });
 });
 

@@ -21,13 +21,6 @@ class UserData extends Seeder
                 'level' => 1,
                 'email' => 'admin@gmail.com',
             ],
-            [
-                'name' => 'customer',
-                'username' => 'customer',
-                'password' => bcrypt('123456'),
-                'level' => 2,
-                'email' => 'customer@gmail.com',
-            ],
         ];
 
         foreach ($user as $key => $value) {

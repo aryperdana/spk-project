@@ -27,7 +27,7 @@ export const SideBarLayout = () => {
                     </Link>
                 </li>
                 <li>
-                    <Link href="/admin/user">
+                    <Link href="/user">
                         <AiOutlineUser />
                         User
                     </Link>
@@ -54,6 +54,12 @@ export const SideBarLayout = () => {
                     <Link href="/atribut-kriteria">
                         <IoServerOutline />
                         Atribut Kriteria
+                    </Link>
+                </li>
+                <li>
+                    <Link href="/projects">
+                        <IoServerOutline />
+                        Projects
                     </Link>
                 </li>
             </ul>
