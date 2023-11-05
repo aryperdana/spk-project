@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AtributKriteria;
 use App\Models\SubKriteria;
+use App\Models\Kriteria;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -16,13 +17,15 @@ class AtributKriteriaController extends Controller
     {
         $key = $request->key;
         $atribut_kriteria = AtributKriteria
-            ::orderBy('created_at', 'DESC')->with('subKriteria')->where('nama_atribut_kriteria', 'LIKE', '%' . $key . '%')
+            ::orderBy('created_at', 'DESC')->with('kriteria')->with('subKriteria')->where('nama_atribut_kriteria', 'LIKE', '%' . $key . '%')
             ->paginate(10);
 
-        $kriteria = SubKriteria::all();
+        $sub_kriteria = SubKriteria::all();
+        $kriteria = Kriteria::all();
         return Inertia::render('AdminPanel/Pages/Master/AtributKriteria/AtributKriteria', [
             'atribut_kriteria_data' => $atribut_kriteria,
-            'sub_kriteria_data' => $kriteria,
+            'sub_kriteria_data' => $sub_kriteria,
+            'kriteria_data' => $kriteria,
         ]);
     }
 
@@ -55,8 +58,10 @@ class AtributKriteriaController extends Controller
         $atribut_kriteria = new AtributKriteria;
         $atribut_kriteria->nama_atribut_kriteria = $request->nama_atribut_kriteria;
         $atribut_kriteria->id_sub_kriteria = $request->id_sub_kriteria;
+        $atribut_kriteria->id_kriteria = $request->id_kriteria;
         $atribut_kriteria->kode = $request->kode;
         $atribut_kriteria->priority = $request->priority;
+        $atribut_kriteria->score = $request->score;
         $atribut_kriteria->save();
 
         return to_route('atribut-kriteria.index');
@@ -102,8 +107,10 @@ class AtributKriteriaController extends Controller
         $atribut_kriteria = AtributKriteria::find($id);
         $atribut_kriteria->nama_atribut_kriteria = $request->nama_atribut_kriteria;
         $atribut_kriteria->id_sub_kriteria = $request->id_sub_kriteria;
+        $atribut_kriteria->id_kriteria = $request->id_kriteria;
         $atribut_kriteria->kode = $request->kode;
         $atribut_kriteria->priority = $request->priority;
+        $atribut_kriteria->score = $request->score;
         $atribut_kriteria->save();
 
         return to_route('atribut-kriteria.index');

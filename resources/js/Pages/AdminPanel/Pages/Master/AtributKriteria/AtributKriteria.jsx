@@ -10,7 +10,11 @@ import React, { useState } from "react";
 import MainLayout from "../../../Layouts";
 import { HiOutlineTrash, HiOutlinePencilAlt } from "react-icons/hi";
 
-const AtributKriteria = ({ atribut_kriteria_data, sub_kriteria_data }) => {
+const AtributKriteria = ({
+    atribut_kriteria_data,
+    sub_kriteria_data,
+    kriteria_data,
+}) => {
     console.log("test", atribut_kriteria_data);
     const [modalConfig, setModalConfig] = useState({
         type: "",
@@ -38,23 +42,29 @@ const AtributKriteria = ({ atribut_kriteria_data, sub_kriteria_data }) => {
         kode: "",
         nama_atribut_kriteria: "",
         id_sub_kriteria: "",
+        id_kriteria: "",
         bobot_atribut_kriteria: "",
         priority: "",
+        score: "",
     });
 
     const handleOnChange = (event) => {
         setData(event.target.name, event.target.value);
     };
 
-    const calculateSum = (arr, priority, id_sub_kriteria) => {
+    const calculateSum = (arr, priority, id_sub_kriteria, id_kriteria) => {
         if (priority < 1) {
             return 0;
         }
 
         return arr
-            .filter((val) => val.id_sub_kriteria === id_sub_kriteria)
+            .filter((val) =>
+                id_sub_kriteria
+                    ? val.id_sub_kriteria === id_sub_kriteria
+                    : val.id_kriteria === id_kriteria
+            )
             .reduce((accumulator, currentNumber, index) => {
-                if (index + 1 >= priority) {
+                if (currentNumber?.priority >= priority) {
                     return accumulator + 1 / currentNumber?.priority;
                 }
                 return accumulator;
@@ -167,7 +177,10 @@ const AtributKriteria = ({ atribut_kriteria_data, sub_kriteria_data }) => {
                                     <th className="text-center">Aksi</th>
                                     <th className="text-center">Kode</th>
                                     <th className="text-center">
-                                        Nama Atribut Kriteria
+                                        Nama Kriteria
+                                    </th>
+                                    <th className="text-center">
+                                        Nama Sub Kriteria
                                     </th>
                                     <th className="text-center">
                                         Nama Atribut Kriteria
@@ -221,6 +234,9 @@ const AtributKriteria = ({ atribut_kriteria_data, sub_kriteria_data }) => {
                                                                         val.priority,
                                                                     id_sub_kriteria:
                                                                         val.id_sub_kriteria,
+                                                                    id_kriteria:
+                                                                        val.id_kriteria,
+                                                                    score: val.score,
                                                                     id: val.id,
                                                                 });
                                                             }}
@@ -241,10 +257,13 @@ const AtributKriteria = ({ atribut_kriteria_data, sub_kriteria_data }) => {
                                                 </td>
                                                 <td>{val.kode}</td>
                                                 <td>
-                                                    {
-                                                        val?.sub_kriteria
-                                                            ?.nama_sub_kriteria
-                                                    }
+                                                    {val?.kriteria
+                                                        ?.nama_kriteria ?? "-"}
+                                                </td>
+                                                <td>
+                                                    {val?.sub_kriteria
+                                                        ?.nama_sub_kriteria ??
+                                                        "-"}
                                                 </td>
                                                 <td>
                                                     {val.nama_atribut_kriteria}
@@ -254,8 +273,11 @@ const AtributKriteria = ({ atribut_kriteria_data, sub_kriteria_data }) => {
                                                         parseFloat(
                                                             jumlahKriteria.filter(
                                                                 (res) =>
-                                                                    val.id_sub_kriteria ===
-                                                                    res.id_sub_kriteria
+                                                                    res?.id_sub_kriteria
+                                                                        ? val.id_sub_kriteria ===
+                                                                          res.id_sub_kriteria
+                                                                        : val.id_kriteria ===
+                                                                          res.id_kriteria
                                                             ).length
                                                         )) *
                                                         calculateSum(
@@ -263,7 +285,8 @@ const AtributKriteria = ({ atribut_kriteria_data, sub_kriteria_data }) => {
                                                             parseFloat(
                                                                 val.priority
                                                             ),
-                                                            val.id_sub_kriteria
+                                                            val.id_sub_kriteria,
+                                                            val.id_kriteria
                                                         )}
                                                 </td>
                                                 <td>{val.priority}</td>
@@ -304,7 +327,7 @@ const AtributKriteria = ({ atribut_kriteria_data, sub_kriteria_data }) => {
                 <div className="modal-box">
                     <div className="font-bold mb-3">
                         {modalConfig.type === "add" ? "Tambah" : "Ubah"} Data
-                        AtributKriteria
+                        Atribut Kriteria
                     </div>
                     <hr />
                     <div className="modal-middle mt-3">
@@ -313,7 +336,7 @@ const AtributKriteria = ({ atribut_kriteria_data, sub_kriteria_data }) => {
                                 type="text"
                                 label="Kode"
                                 name="kode"
-                                placeholder="Masukan AtributKriteria"
+                                placeholder="Masukan Atribut Kriteria"
                                 onChange={handleOnChange}
                                 value={data?.kode}
                                 errorText={errors.kode}
@@ -327,6 +350,42 @@ const AtributKriteria = ({ atribut_kriteria_data, sub_kriteria_data }) => {
                                 value={data?.nama_atribut_kriteria}
                                 errorText={errors.nama_atribut_kriteria}
                             />
+
+                            <div className="form-control w-full">
+                                <label className="label">
+                                    <span className="label-text">Kriteria</span>
+                                </label>
+                                <select
+                                    className="select select-sm select-bordered py-0"
+                                    name="id_kriteria"
+                                    onChange={handleOnChange}
+                                    defaultValue={data.id_kriteria}
+                                >
+                                    <option
+                                        disabled
+                                        selected={
+                                            modalConfig.type === "add"
+                                                ? true
+                                                : false
+                                        }
+                                    >
+                                        Pilih Salah Satu
+                                    </option>
+                                    {kriteria_data.map((val) => (
+                                        <option
+                                            value={val.id}
+                                            selected={
+                                                val.id === data.id_kriteria
+                                                    ? true
+                                                    : false
+                                            }
+                                        >
+                                            {val.nama_kriteria}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
                             <div className="form-control w-full">
                                 <label className="label">
                                     <span className="label-text">
@@ -386,6 +445,15 @@ const AtributKriteria = ({ atribut_kriteria_data, sub_kriteria_data }) => {
                                 }}
                                 value={data?.priority}
                                 errorText={errors.priority}
+                            />
+                            <Input
+                                type="text"
+                                label="Scoring"
+                                name="score"
+                                placeholder="Masukan Scoring"
+                                onChange={handleOnChange}
+                                value={data?.score}
+                                errorText={errors.score}
                             />
 
                             <div className="modal-action">

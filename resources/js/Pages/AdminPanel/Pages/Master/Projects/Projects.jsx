@@ -5,7 +5,7 @@ import {
     Pagination,
     Textarea,
 } from "@/Pages/AdminPanel/Components";
-import { useForm } from "@inertiajs/react";
+import { Link, useForm } from "@inertiajs/react";
 import React, { useState } from "react";
 import MainLayout from "../../../Layouts";
 import { HiOutlineTrash, HiOutlinePencilAlt } from "react-icons/hi";
@@ -108,18 +108,12 @@ const Projects = ({ projects_data, user_data, id_user }) => {
                                 className="input input-bordered input-sm w-full max-w-xs"
                             />
                         </div>
-                        <button
+                        <Link
                             className="btn btn-primary btn-sm"
-                            onClick={() =>
-                                setModalConfig({
-                                    ...modalConfig,
-                                    show: true,
-                                    type: "add",
-                                })
-                            }
+                            href="projects/create"
                         >
                             Tambah
-                        </button>
+                        </Link>
                     </div>
 
                     <div className="overflow-x-auto">

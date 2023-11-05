@@ -16,4 +16,9 @@ class AtributKriteria extends Model
     {
         return $this->belongsTo(SubKriteria::class, 'id_sub_kriteria');
     }
+
+    public function kriteria()
+    {
+        return $this->belongsTo(Kriteria::class, 'id_kriteria');
+    }
 }

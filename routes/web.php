@@ -5,6 +5,7 @@ use App\Http\Controllers\KriteriaController;
 use App\Http\Controllers\SubKriteriaController;
 use App\Http\Controllers\AtributKriteriaController;
 use App\Http\Controllers\ProjectsController;
+use App\Http\Controllers\PerhitunganSmarterController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +45,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::resource('/sub-kriteria', SubKriteriaController::class);
         Route::resource('/atribut-kriteria', AtributKriteriaController::class);
         Route::resource('/projects', ProjectsController::class);
+        Route::resource('/perhitungan-smarter', PerhitunganSmarterController::class);
     });
 });
 

@@ -40,6 +40,7 @@ const SubKriteria = ({ sub_kriteria_data, kriteria_data }) => {
         id_kriteria: "",
         bobot_sub_kriteria: "",
         priority: "",
+        is_header: false,
     });
 
     const handleOnChange = (event) => {
@@ -54,7 +55,7 @@ const SubKriteria = ({ sub_kriteria_data, kriteria_data }) => {
         return arr
             .filter((val) => val.id_kriteria === id_kriteria)
             .reduce((accumulator, currentNumber, index) => {
-                if (index + 1 >= priority) {
+                if (currentNumber?.priority >= priority) {
                     return accumulator + 1 / currentNumber?.priority;
                 }
                 return accumulator;
@@ -219,6 +220,8 @@ const SubKriteria = ({ sub_kriteria_data, kriteria_data }) => {
                                                                 id_kriteria:
                                                                     val.id_kriteria,
                                                                 id: val.id,
+                                                                is_header:
+                                                                    val?.is_header,
                                                             });
                                                         }}
                                                     >
@@ -373,6 +376,27 @@ const SubKriteria = ({ sub_kriteria_data, kriteria_data }) => {
                                 value={data?.priority}
                                 errorText={errors.priority}
                             />
+
+                            <div className="form-control">
+                                <label className="label cursor-pointer">
+                                    <span className="label-text">Header</span>
+                                </label>
+                                <input
+                                    type="checkbox"
+                                    className="checkbox checkbox-sm"
+                                    name="is_header"
+                                    checked={
+                                        data?.is_header === 1 ? true : false
+                                    }
+                                    onChange={() =>
+                                        setData({
+                                            ...data,
+                                            is_header:
+                                                data?.is_header === 1 ? 2 : 1,
+                                        })
+                                    }
+                                />
+                            </div>
 
                             <div className="modal-action">
                                 <button

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('atribut_kriterias', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_sub_kriteria');
+            $table->unsignedBigInteger('id_sub_kriteria')->nullable()->change();
             $table->string('nama_atribut_kriteria');
             $table->string('kode');
             $table->integer('priority');

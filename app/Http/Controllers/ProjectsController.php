@@ -7,6 +7,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use App\Models\Alternatif;
+use App\Models\ProjectAlternatif;
+use App\Models\BagianBangunanAlternatif;
 
 class ProjectsController extends Controller
 {
@@ -37,7 +40,14 @@ class ProjectsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {}
+    { 
+        $alternatif = Alternatif::all();
+        $id_user = Auth::user()->id;
+        return Inertia::render('AdminPanel/Pages/Master/Projects/TambahProjects', [
+            'alternatif_dropdown' => $alternatif,
+            'id_user' => $id_user
+        ]);
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -55,6 +65,8 @@ class ProjectsController extends Controller
             'nama_project.required' => 'Projects Tidak Boleh Kosong',
         ]);
 
+        // dd($request);
+
 
         $projects = new Projects;
         $projects->nama_project = $request->nama_project;
@@ -63,6 +75,27 @@ class ProjectsController extends Controller
         $projects->tanggal = $request->tanggal;
         $projects->id_user = $request->id_user;
         $projects->save();
+
+        foreach ($request->detail as $key => $value) {
+            $detail = array(
+                'id_project'   => $projects->id,
+                'id_alternatif' => $value['id'],
+            );
+
+           
+            $detail = ProjectAlternatif::create($detail);
+    
+
+
+            foreach ($value['detail_bangunan'] as $val) {
+                $detail_bangunan = array(
+                    'id_project_alternatif'   => $detail->id,
+                    'nama_bagian_bangunan' => $val,
+                );
+    
+                $detail_bangunan = BagianBangunanAlternatif::create($detail_bangunan);
+            }
+        }
 
         return to_route('projects.index');
     }

@@ -23,7 +23,7 @@ const Kriteria = ({ kriteria_data }) => {
 
     const jumlahKriteria = kriteria_data?.data?.length;
 
-    console.log(jumlahKriteria);
+    // console.log(jumlahKriteria);
     const {
         data,
         setData,
@@ -50,8 +50,8 @@ const Kriteria = ({ kriteria_data }) => {
             return 0;
         }
 
-        return arr.reduce((accumulator, currentNumber, index) => {
-            if (index + 1 >= priority) {
+        return arr.reduce((accumulator, currentNumber) => {
+            if (currentNumber?.priority >= priority) {
                 return accumulator + 1 / currentNumber?.priority;
             }
             return accumulator;
@@ -164,76 +164,75 @@ const Kriteria = ({ kriteria_data }) => {
                             </thead>
                             <tbody>
                                 {kriteria_data.data.length > 0 ? (
-                                    kriteria_data.data.map((val, ind) => (
-                                        <tr>
-                                            {console.log(
-                                                "cok",
-                                                calculateSum(
-                                                    kriteria_data?.data,
-                                                    parseFloat(val.priority)
-                                                )
-                                            )}
-                                            <td className="w-10">{ind + 1}</td>
-                                            <td className="w-10">
-                                                <div className="btn-group">
-                                                    <button
-                                                        className="btn btn-outline btn-success btn-sm"
-                                                        onClick={() => {
-                                                            setModalConfig({
-                                                                ...modalConfig,
-                                                                show: true,
-                                                                type: "update",
-                                                            });
-                                                            setData({
-                                                                nama_kriteria:
-                                                                    val.nama_kriteria,
-                                                                kode: val.kode,
-                                                                bobot_kriteria:
-                                                                    (1 /
-                                                                        parseFloat(
-                                                                            jumlahKriteria
-                                                                        )) *
-                                                                    calculateSum(
-                                                                        kriteria_data?.data,
-                                                                        parseFloat(
-                                                                            val.priority
-                                                                        )
-                                                                    ),
-                                                                priority:
-                                                                    val.priority,
-                                                                id: val.id,
-                                                            });
-                                                        }}
-                                                    >
-                                                        <HiOutlinePencilAlt />
-                                                    </button>
-                                                    <button
-                                                        className="btn btn-outline btn-error btn-sm"
-                                                        onClick={() => {
-                                                            deleteSubmit(
-                                                                val.id
-                                                            );
-                                                        }}
-                                                    >
-                                                        <HiOutlineTrash />
-                                                    </button>
-                                                </div>
-                                            </td>
-                                            <td>{val.kode}</td>
-                                            <td>{val.nama_kriteria}</td>
-                                            <td>
-                                                {(1 /
-                                                    parseFloat(
-                                                        jumlahKriteria
-                                                    )) *
-                                                    calculateSum(
-                                                        kriteria_data?.data,
-                                                        parseFloat(val.priority)
-                                                    )}
-                                            </td>
-                                            <td>{val.priority}</td>
-                                        </tr>
-                                    ))
+                                    kriteria_data.data.map((val, ind) => {
+                                        const hasilKriterial =
+                                            1 / parseFloat(jumlahKriteria);
+
+                                        return (
+                                            <tr>
+                                                <td className="w-10">
+                                                    {ind + 1}
+                                                </td>
+                                                <td className="w-10">
+                                                    <div className="btn-group">
+                                                        <button
+                                                            className="btn btn-outline btn-success btn-sm"
+                                                            onClick={() => {
+                                                                setModalConfig({
+                                                                    ...modalConfig,
+                                                                    show: true,
+                                                                    type: "update",
+                                                                });
+                                                                setData({
+                                                                    nama_kriteria:
+                                                                        val.nama_kriteria,
+                                                                    kode: val.kode,
+                                                                    bobot_kriteria:
+                                                                        (1 /
+                                                                            parseFloat(
+                                                                                jumlahKriteria
+                                                                            )) *
+                                                                        calculateSum(
+                                                                            kriteria_data?.data,
+                                                                            parseFloat(
+                                                                                val.priority
+                                                                            )
+                                                                        ),
+                                                                    priority:
+                                                                        val.priority,
+                                                                    id: val.id,
+                                                                });
+                                                            }}
+                                                        >
+                                                            <HiOutlinePencilAlt />
+                                                        </button>
+                                                        <button
+                                                            className="btn btn-outline btn-error btn-sm"
+                                                            onClick={() => {
+                                                                deleteSubmit(
+                                                                    val.id
+                                                                );
+                                                            }}
+                                                        >
+                                                            <HiOutlineTrash />
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                                <td>{val.kode}</td>
+                                                <td>{val.nama_kriteria}</td>
+                                                <td>
+                                                    {hasilKriterial *
+                                                        calculateSum(
+                                                            kriteria_data?.data,
+                                                            parseFloat(
+                                                                val.priority
+                                                            )
+                                                        )}
+                                                </td>
+                                                <td>{val.priority}</td>
+                                            </tr>
+                                        );
+                                    })
                                 ) : (
                                     <tr>
                                         <td

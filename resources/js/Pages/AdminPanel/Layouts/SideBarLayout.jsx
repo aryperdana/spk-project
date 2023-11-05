@@ -1,13 +1,8 @@
 import { Link } from "@inertiajs/react";
 import React from "react";
-import {
-    AiOutlineHome,
-    AiOutlineUser,
-    AiOutlineDatabase,
-    AiOutlineShoppingCart,
-} from "react-icons/ai";
-import { BiCategory, BiUser } from "react-icons/bi";
-import { IoServer, IoServerOutline } from "react-icons/io5";
+import { AiOutlineHome, AiOutlineUser } from "react-icons/ai";
+import { CiCalculator2 } from "react-icons/ci";
+import { IoServerOutline } from "react-icons/io5";
 
 export const SideBarLayout = () => {
     return (
@@ -60,6 +55,12 @@ export const SideBarLayout = () => {
                     <Link href="/projects">
                         <IoServerOutline />
                         Projects
+                    </Link>
+                </li>
+                <li>
+                    <Link href="/perhitungan-smarter">
+                        <CiCalculator2 />
+                        Perhitungan SMARTER
                     </Link>
                 </li>
             </ul>

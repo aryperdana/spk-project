@@ -16,8 +16,8 @@ class SubKriteria extends Model
         return $this->belongsTo(Kriteria::class, 'id_kriteria');
     }
 
-    // public function atributKriteria()
-    // {
-    //     return $this->hasMany(SubKriteria::class, "id_atribut_kriteria");
-    // }
+    public function atributKriteria()
+    {
+        return $this->hasMany(AtributKriteria::class, "id_sub_kriteria", "id");
+    }
 }

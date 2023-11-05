@@ -1,0 +1,86 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Kriteria;
+use App\Models\Alternatif;
+use App\Models\Projects;
+use App\Models\SubKriteria;
+use App\Models\AtributKriteria;
+use Inertia\Inertia;
+
+class PerhitunganSmarterController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request)
+    {
+        $key = $request->key;
+        $alternatif = Alternatif::all();
+        $kriteria = Kriteria::with('subKriteria')->with('atributKriteria')->get();
+        $project = Projects::with('detailAlternatif')->get();
+        $subKriteria = SubKriteria::with('atributKriteria')->where('id_kriteria', '=', 6)->get();
+        $atributKriteria = AtributKriteria::all();
+        $subKriteriaAll = SubKriteria::with('atributKriteria')->get();
+        
+
+        return Inertia::render('AdminPanel/Pages/Master/PerhitunganSmarter/PerhitunganSmarter', [
+            'kriteria_data' => $kriteria,
+            'alternatif_data' => $alternatif,
+            'project_dropdown' => $project,
+            'sub_kriteria_dropdown' => $subKriteria,
+            'atribut_kriteria_all' => $atributKriteria,
+            'sub_kriteria_all' => $subKriteriaAll
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
+    }
+}

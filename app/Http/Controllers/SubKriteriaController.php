@@ -57,6 +57,7 @@ class SubKriteriaController extends Controller
         $sub_kriteria->id_kriteria = $request->id_kriteria;
         $sub_kriteria->kode = $request->kode;
         $sub_kriteria->priority = $request->priority;
+        $sub_kriteria->is_header = $request->is_header;
         $sub_kriteria->save();
 
         return to_route('sub-kriteria.index');
@@ -98,12 +99,15 @@ class SubKriteriaController extends Controller
         [
             'nama_sub_kriteria.required' => 'SubKriteria Tidak Boleh Kosong',
         ]);
+
+        $is_header = $request->is_header ? 1 : 2;
         
         $sub_kriteria = SubKriteria::find($id);
         $sub_kriteria->nama_sub_kriteria = $request->nama_sub_kriteria;
         $sub_kriteria->id_kriteria = $request->id_kriteria;
         $sub_kriteria->kode = $request->kode;
         $sub_kriteria->priority = $request->priority;
+        $sub_kriteria->is_header = $is_header;
         $sub_kriteria->save();
 
         return to_route('sub-kriteria.index');
