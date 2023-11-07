@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Kriteria;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\SubKriteria;
+use App\Models\AtributKriteria;
 
 class KriteriaController extends Controller
 {
@@ -15,9 +17,9 @@ class KriteriaController extends Controller
     {
         $key = $request->key;
         $kriteria = Kriteria
-            ::orderBy('created_at', 'DESC')->where('nama_kriteria', 'LIKE', '%' . $key . '%')
+            ::orderBy('priority', 'asc')->where('nama_kriteria', 'LIKE', '%' . $key . '%')
             ->paginate(10);
-        return Inertia::render('AdminPanel/Pages/Master/Kriteria/Kriteria', [
+        return Inertia::render('AdminPanel/Pages/Master/KriteriaNew/Kriteria', [
             'kriteria_data' => $kriteria,
         ]);
     }
@@ -29,7 +31,14 @@ class KriteriaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {}
+    {
+        // $alternatif = Alternatif::all();
+        // $id_user = Auth::user()->id;
+        return Inertia::render('AdminPanel/Pages/Master/KriteriaNew/TambahKriteria', [
+            // 'alternatif_dropdown' => $alternatif,
+            // 'id_user' => $id_user
+        ]);
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -54,6 +63,34 @@ class KriteriaController extends Controller
         $kriteria->priority = $request->priority;
         $kriteria->save();
 
+        foreach ($request->detail as $key => $value) {
+            $detail = array(
+                'id_kriteria' => $kriteria->id,
+                'nama_sub_kriteria' => $value['nama_sub_kriteria'],
+                'kode' =>  $value['kode'],
+                'priority' => $value['priority'],
+                'is_header' => $value['is_header']
+            );
+
+           
+            $detail = SubKriteria::create($detail);
+    
+
+
+            foreach ($value['sub_atribut'] as $val) {
+                $sub_atribut = array(
+                    'id_sub_kriteria' => $detail->id,
+                    'id_kriteria' => $kriteria->id,
+                    'nama_atribut_kriteria' => $val['nama_atribut_kriteria'],
+                    'kode' => $val['kode'],
+                    'priority' => $val['priority'],
+                    'score' => $val['score']
+                );
+    
+                $sub_atribut = AtributKriteria::create($sub_atribut);
+            }
+        }
+
         return to_route('kriteria.index');
     }
 
@@ -75,7 +112,14 @@ class KriteriaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-    {}
+    {
+        $kriteria = Kriteria::with('subKriteria')->find($id);
+
+        return Inertia::render('AdminPanel/Pages/Master/KriteriaNew/UbahKriteria', [
+            'singleData' => $kriteria,
+       
+        ]);
+    }
 
     /**
      * Update the specified resource in storage.
@@ -99,6 +143,36 @@ class KriteriaController extends Controller
         $kriteria->kode = $request->kode;
         $kriteria->priority = $request->priority;
         $kriteria->save();
+
+        foreach ($request->detail as $key => $value) {
+            $detail = array(
+                'id' => $$value['id'],
+                'id_kriteria' => $kriteria->id,
+                'nama_sub_kriteria' => $value['nama_sub_kriteria'],
+                'kode' =>  $value['kode'],
+                'priority' => $value['priority'],
+                'is_header' => $value['is_header']
+            );
+
+           
+            $detail = SubKriteria::save($detail);
+    
+
+
+            foreach ($value['sub_atribut'] as $val) {
+                $sub_atribut = array(
+                    'id' => $$value['id'],
+                    'id_sub_kriteria' => $detail->id,
+                    'id_kriteria' => $kriteria->id,
+                    'nama_atribut_kriteria' => $val['nama_atribut_kriteria'],
+                    'kode' => $val['kode'],
+                    'priority' => $val['priority'],
+                    'score' => $val['score']
+                );
+    
+                $sub_atribut = AtributKriteria::save($sub_atribut);
+            }
+        }
 
         return to_route('kriteria.index');
     }

@@ -14,7 +14,7 @@ class Kriteria extends Model
 
     public function subKriteria()
     {
-        return $this->hasMany(SubKriteria::class, "id_kriteria", 'id');
+        return $this->hasMany(SubKriteria::class, "id_kriteria", 'id')->with('atributKriteria');
     }
 
     public function atributKriteria()

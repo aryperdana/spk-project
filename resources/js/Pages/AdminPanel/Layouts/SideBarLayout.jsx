@@ -39,7 +39,7 @@ export const SideBarLayout = () => {
                         Kriteria
                     </Link>
                 </li>
-                <li>
+                {/* <li>
                     <Link href="/sub-kriteria">
                         <IoServerOutline />
                         Sub Kriteria
@@ -50,7 +50,7 @@ export const SideBarLayout = () => {
                         <IoServerOutline />
                         Atribut Kriteria
                     </Link>
-                </li>
+                </li> */}
                 <li>
                     <Link href="/projects">
                         <IoServerOutline />
