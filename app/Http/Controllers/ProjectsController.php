@@ -76,28 +76,21 @@ class ProjectsController extends Controller
         $projects->id_user = $request->id_user;
         $projects->save();
 
-        foreach ($request->detail as $key => $value) {
+        $detail_alternatif = array_filter($request->detail, function($k) {
+            return $k['isUse'] == true;
+        });
+
+        foreach ($detail_alternatif as $key => $value) {
             $detail = array(
                 'id_project'   => $projects->id,
                 'id_alternatif' => $value['id'],
+                'jumlah_jenis_bahan' => $value['jumlah_jenis_bahan'],
             );
-
-           
+            
             $detail = ProjectAlternatif::create($detail);
-    
-
-
-            foreach ($value['detail_bangunan'] as $val) {
-                $detail_bangunan = array(
-                    'id_project_alternatif'   => $detail->id,
-                    'nama_bagian_bangunan' => $val,
-                );
-    
-                $detail_bangunan = BagianBangunanAlternatif::create($detail_bangunan);
-            }
         }
 
-        return to_route('projects.index');
+        return to_route('perhitungan-smarter.index', ['id' => $projects->id]);
     }
 
     /**

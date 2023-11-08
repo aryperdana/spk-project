@@ -1,5 +1,5 @@
 import { useForm } from "@inertiajs/react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MainLayout from "../../../Layouts";
 import {
     TableNilaiStudiKasus,
@@ -17,8 +17,8 @@ const PerhitunganSmarter = ({
     sub_kriteria_dropdown,
     atribut_kriteria_all,
     sub_kriteria_all,
+    id_project,
 }) => {
-    console.log("all", sub_kriteria_all);
     const [dataAlternatifSelected, setDataAlternatifSelected] = useState([]);
     const [tableNilaiStudiKasusConfig, setTableNilaiStudiKasusConfig] =
         useState({ show: false, data: [] });
@@ -39,6 +39,18 @@ const PerhitunganSmarter = ({
 
         return value;
     };
+
+    useEffect(() => {
+        if (id_project) {
+            const value = project_dropdown.find(
+                (res) => res.id === parseInt(id_project)
+            );
+
+            setDataAlternatifSelected(value?.detail_alternatif);
+        }
+        return () => {};
+    }, []);
+
     return (
         <MainLayout title="Perhitungan" navbarTitle="Perhitungan">
             <div className="card w-full bg-base-100 shadow-sm">
@@ -64,9 +76,11 @@ const PerhitunganSmarter = ({
                                 {project_dropdown.map((val) => (
                                     <option
                                         value={val.id}
-                                        // selected={
-                                        //     val.id === data.id ? true : false
-                                        // }
+                                        selected={
+                                            val.id === parseInt(id_project)
+                                                ? true
+                                                : false
+                                        }
                                     >
                                         {val.nama_project}
                                     </option>
@@ -74,6 +88,7 @@ const PerhitunganSmarter = ({
                             </select>
                         </div>
                     </div>
+
                     {dataAlternatifSelected.length > 0 && (
                         <TableStudiKasus
                             dataAlternatif={transformDataAlternatif(

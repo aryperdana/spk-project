@@ -32,7 +32,8 @@ class PerhitunganSmarterController extends Controller
             'project_dropdown' => $project,
             'sub_kriteria_dropdown' => $subKriteria,
             'atribut_kriteria_all' => $atributKriteria,
-            'sub_kriteria_all' => $subKriteriaAll
+            'sub_kriteria_all' => $subKriteriaAll,
+            'id_project' => $request->id
         ]);
     }
 

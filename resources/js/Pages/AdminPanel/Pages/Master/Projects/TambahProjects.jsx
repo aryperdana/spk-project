@@ -22,6 +22,11 @@ const TambahProjects = ({ alternatif_dropdown, id_user }) => {
 
     const [valueBagianBangunan, setValueBagianBangunan] = useState("");
 
+    const drodownJumlahJenisBahan = [
+        { value: "hanya satu", label: "Hanya Satu" },
+        { value: "lebih dari satu", label: "Lebih dari Satu" },
+    ];
+
     const {
         data,
         setData,
@@ -38,7 +43,11 @@ const TambahProjects = ({ alternatif_dropdown, id_user }) => {
         lokasi_pura: "",
         deskripsi_project: "",
         id_user: id_user,
-        detail: [],
+        detail: alternatif_dropdown.map((val) => ({
+            ...val,
+            isUse: false,
+            jumlah_jenis_bahan: "",
+        })),
     });
 
     console.log(data);
@@ -149,65 +158,20 @@ const TambahProjects = ({ alternatif_dropdown, id_user }) => {
 
                 <div className="card w-full bg-base-100 shadow-sm mt-4">
                     <div className="card-body">
-                        <div className="grid grid-cols-4 gap-3">
-                            <div className="form-control w-full">
-                                <select
-                                    className="select select-sm select-bordered py-0"
-                                    name="id_alternatif"
-                                    onChange={(val) => {
-                                        const value = alternatif_dropdown.find(
-                                            (res) =>
-                                                res.id ===
-                                                parseInt(val.target.value)
-                                        );
-
-                                        setDataAlternatif({
-                                            ...value,
-                                        });
-                                    }}
-                                    defaultValue={data.id}
-                                >
-                                    <option>Pilih Salah Satu</option>
-                                    {alternatif_dropdown.map((val) => (
-                                        <option
-                                            value={val.id}
-                                            selected={
-                                                val.id === data.id
-                                                    ? true
-                                                    : false
-                                            }
-                                        >
-                                            {val.nama_alternatif}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div
-                                className="btn btn-primary btn-sm p-0 w-16"
-                                onClick={() => {
-                                    setData({
-                                        ...data,
-                                        detail: [
-                                            ...data.detail,
-                                            dataAlternatif,
-                                        ],
-                                    });
-                                }}
-                            >
-                                <IoAddOutline className="text-xl" />
-                            </div>
-                        </div>
                         <div className="overflow-x-auto">
                             <table className="table table-compact table-auto w-full">
                                 {/* head */}
                                 <thead>
                                     <tr>
                                         <th className="text-center">No</th>
-                                        <th className="text-center">Aksi</th>
                                         <th className="text-center">Nama</th>
                                         <th className="text-center">
                                             Kategori
                                         </th>
+                                        <th className="text-center">
+                                            Jumlah Jenis Bahan
+                                        </th>
+                                        <th className="text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -218,35 +182,6 @@ const TambahProjects = ({ alternatif_dropdown, id_user }) => {
                                                     <tr>
                                                         <td className="w-10">
                                                             {ind + 1}
-                                                        </td>
-                                                        <td className="w-10">
-                                                            <div className="btn-group">
-                                                                <div
-                                                                    className="btn btn-outline btn-primary btn-sm"
-                                                                    onClick={() => {
-                                                                        setModalConfig(
-                                                                            {
-                                                                                show: true,
-                                                                                data: val,
-                                                                                ind: ind,
-                                                                            }
-                                                                        );
-                                                                    }}
-                                                                >
-                                                                    Bagian
-                                                                    Bangunan
-                                                                </div>
-                                                                <div
-                                                                    className="btn btn-outline btn-error btn-sm"
-                                                                    onClick={() => {
-                                                                        deleteSubmit(
-                                                                            ind
-                                                                        );
-                                                                    }}
-                                                                >
-                                                                    <HiOutlineTrash />
-                                                                </div>
-                                                            </div>
                                                         </td>
                                                         <td>
                                                             {
@@ -260,6 +195,98 @@ const TambahProjects = ({ alternatif_dropdown, id_user }) => {
                                                             }}
                                                         >
                                                             {val?.kategori}
+                                                        </td>
+                                                        <td className="w-1/5">
+                                                            <div className="form-control w-full">
+                                                                <select
+                                                                    className="select select-sm select-bordered py-0"
+                                                                    name="jumlah_jenis_bahan"
+                                                                    onChange={(
+                                                                        e
+                                                                    ) =>
+                                                                        setData(
+                                                                            {
+                                                                                ...data,
+                                                                                detail: data.detail?.map(
+                                                                                    (
+                                                                                        res,
+                                                                                        i
+                                                                                    ) =>
+                                                                                        i ===
+                                                                                        ind
+                                                                                            ? {
+                                                                                                  ...res,
+                                                                                                  jumlah_jenis_bahan:
+                                                                                                      e
+                                                                                                          .target
+                                                                                                          .value,
+                                                                                              }
+                                                                                            : res
+                                                                                ),
+                                                                            }
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    <option>
+                                                                        Pilih
+                                                                        Salah
+                                                                        Satu
+                                                                    </option>
+                                                                    {drodownJumlahJenisBahan.map(
+                                                                        (
+                                                                            res
+                                                                        ) => (
+                                                                            <option
+                                                                                value={
+                                                                                    res.jumlah_jenis_bahan
+                                                                                }
+                                                                                selected={
+                                                                                    res.value ===
+                                                                                    data.jumlah_jenis_bahan
+                                                                                        ? true
+                                                                                        : false
+                                                                                }
+                                                                            >
+                                                                                {
+                                                                                    res.label
+                                                                                }
+                                                                            </option>
+                                                                        )
+                                                                    )}
+                                                                </select>
+                                                            </div>
+                                                        </td>
+                                                        <td className="w-10">
+                                                            <div className="form-control items-center">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    className="checkbox checkbox-sm"
+                                                                    name="is_header"
+                                                                    checked={
+                                                                        val?.isUse
+                                                                    }
+                                                                    onChange={() =>
+                                                                        setData(
+                                                                            {
+                                                                                ...data,
+                                                                                detail: data.detail?.map(
+                                                                                    (
+                                                                                        res,
+                                                                                        i
+                                                                                    ) =>
+                                                                                        i ===
+                                                                                        ind
+                                                                                            ? {
+                                                                                                  ...res,
+                                                                                                  isUse: !val?.isUse,
+                                                                                              }
+                                                                                            : res
+                                                                                ),
+                                                                            }
+                                                                        )
+                                                                    }
+                                                                />
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                 </>
