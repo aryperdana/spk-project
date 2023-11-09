@@ -111,7 +111,17 @@ class ProjectsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-    {}
+    {
+        $project = Projects::with('detailAlternatif')->find($id);
+        $alternatif = Alternatif::all();
+        $id_user = Auth::user()->id;
+
+        return Inertia::render('AdminPanel/Pages/Master/Projects/UbahProjects', [
+            'singleData' => $project,
+            'alternatif_dropdown' => $alternatif,
+            'id_user' => $id_user
+        ]);
+    }
 
     /**
      * Update the specified resource in storage.

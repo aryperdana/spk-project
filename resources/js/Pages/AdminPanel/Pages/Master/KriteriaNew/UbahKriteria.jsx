@@ -8,7 +8,7 @@ import { AiOutlineClose } from "react-icons/ai";
 
 const FormTableSubKriteria = ({ setData, data }) => {
     const [formTableValue, setFormTableValue] = useState({
-        kode: "",
+        kode: "-",
         nama_sub_kriteria: "",
         priority: "",
         is_header: 2,
@@ -32,15 +32,6 @@ const FormTableSubKriteria = ({ setData, data }) => {
 
     return (
         <tr>
-            <td>
-                <Input
-                    type="text"
-                    name="kode"
-                    placeholder="Masukan kode"
-                    onChange={handleOnChange}
-                    value={formTableValue?.kode}
-                />
-            </td>
             <td>
                 <Input
                     type="text"
@@ -90,7 +81,7 @@ const FormTableSubKriteria = ({ setData, data }) => {
 
 const FormTableSubAtribut = ({ setData, data }) => {
     const [formTableValue, setFormTableValue] = useState({
-        kode: "",
+        kode: "-",
         nama_atribut_kriteria: "",
         priority: "",
         score: "",
@@ -123,15 +114,6 @@ const FormTableSubAtribut = ({ setData, data }) => {
 
     return (
         <tr>
-            <td>
-                <Input
-                    type="text"
-                    name="kode"
-                    placeholder="Masukan Kode"
-                    onChange={handleOnChange}
-                    value={formTableValue?.kode}
-                />
-            </td>
             <td>
                 <Input
                     type="text"
@@ -198,9 +180,6 @@ const UbahKriteria = ({ singleData }) => {
             sub_atribut: val?.atribut_kriteria,
         })),
     });
-
-    console.log(data);
-    console.log("single", singleData);
 
     const handleOnChange = (event) => {
         setData(event.target.name, event.target.value);
@@ -316,7 +295,6 @@ const UbahKriteria = ({ singleData }) => {
                                 {/* head */}
                                 <thead>
                                     <tr>
-                                        <th className="text-center">Kode</th>
                                         <th className="text-center">
                                             Sub Kriteria
                                         </th>
@@ -343,8 +321,6 @@ const UbahKriteria = ({ singleData }) => {
                                                 return (
                                                     <>
                                                         <tr>
-                                                            <td>{val.kode}</td>
-
                                                             <td>
                                                                 {
                                                                     val?.nama_sub_kriteria
@@ -445,7 +421,6 @@ const UbahKriteria = ({ singleData }) => {
                             {/* head */}
                             <thead>
                                 <tr>
-                                    <th className="text-center">Kode</th>
                                     <th className="text-center">
                                         Sub Atirubut
                                     </th>
@@ -469,7 +444,6 @@ const UbahKriteria = ({ singleData }) => {
                                             return (
                                                 <>
                                                     <tr key={ind}>
-                                                        <td>{val?.kode}</td>
                                                         <td>
                                                             {
                                                                 val?.nama_atribut_kriteria

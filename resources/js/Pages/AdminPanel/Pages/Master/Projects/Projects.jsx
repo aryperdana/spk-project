@@ -11,7 +11,6 @@ import MainLayout from "../../../Layouts";
 import { HiOutlineTrash, HiOutlinePencilAlt } from "react-icons/hi";
 
 const Projects = ({ projects_data, user_data, id_user }) => {
-    console.log(id_user);
     const [modalConfig, setModalConfig] = useState({
         type: "",
         show: false,
@@ -22,23 +21,7 @@ const Projects = ({ projects_data, user_data, id_user }) => {
         text: "",
     });
 
-    const {
-        data,
-        setData,
-        post,
-        put,
-        processing,
-        errors,
-        reset,
-        delete: destroy,
-    } = useForm({
-        id: "",
-        nama_project: "",
-        tanggal: "",
-        lokasi_pura: "",
-        deskripsi_project: "",
-        id_user: id_user,
-    });
+    const { get, delete: destroy } = useForm({});
 
     const handleOnChange = (event) => {
         setData(event.target.name, event.target.value);
@@ -93,6 +76,9 @@ const Projects = ({ projects_data, user_data, id_user }) => {
         });
     };
 
+    const updateClick = (id) => get(route("projects.edit", id));
+
+    console.log(projects_data);
     return (
         <MainLayout title="Projects" navbarTitle="Projects">
             {alertConfig.show && (
@@ -134,31 +120,15 @@ const Projects = ({ projects_data, user_data, id_user }) => {
                                 {projects_data.data.length > 0 ? (
                                     projects_data.data.map((val, ind) => (
                                         <tr>
+                                            {console.log(val.id)}
                                             <td className="w-10">{ind + 1}</td>
                                             <td className="w-10">
                                                 <div className="btn-group">
                                                     <button
                                                         className="btn btn-outline btn-success btn-sm"
-                                                        onClick={() => {
-                                                            setModalConfig({
-                                                                ...modalConfig,
-                                                                show: true,
-                                                                type: "update",
-                                                            });
-                                                            setData({
-                                                                id: val?.id,
-                                                                nama_project:
-                                                                    val?.nama_project,
-                                                                tanggal:
-                                                                    val?.tanggal,
-                                                                lokasi_pura:
-                                                                    val?.lokasi_pura,
-                                                                deskripsi_project:
-                                                                    val?.deskripsi_project,
-                                                                id_user:
-                                                                    val?.id_user,
-                                                            });
-                                                        }}
+                                                        onClick={() =>
+                                                            updateClick(val?.id)
+                                                        }
                                                     >
                                                         <HiOutlinePencilAlt />
                                                     </button>
@@ -200,82 +170,6 @@ const Projects = ({ projects_data, user_data, id_user }) => {
                                 curr={projects_data?.current_page}
                             />
                         )}
-                    </div>
-                </div>
-            </div>
-
-            <input
-                type="checkbox"
-                className="modal-toggle"
-                checked={modalConfig.show}
-            />
-            <div className="modal">
-                <div className="modal-box">
-                    <div className="font-bold mb-3">
-                        {modalConfig.type === "add" ? "Tambah" : "Ubah"} Data
-                        Projects
-                    </div>
-                    <hr />
-                    <div className="modal-middle mt-3">
-                        <form onSubmit={submit}>
-                            <Input
-                                type="date"
-                                label="Tanggal"
-                                name="tanggal"
-                                placeholder="Masukan Tanggal"
-                                onChange={handleOnChange}
-                                value={data?.tanggal}
-                                errorText={errors.tanggal}
-                            />
-                            <Input
-                                type="text"
-                                label="Nama Project"
-                                name="nama_project"
-                                placeholder="Masukan Projects"
-                                onChange={handleOnChange}
-                                value={data?.nama_project}
-                                errorText={errors.nama_project}
-                            />
-                            <Textarea
-                                label="Deskripsi Project"
-                                value={data?.deskripsi_project}
-                                onChange={handleOnChange}
-                                name="deskripsi_project"
-                                placeholder="Masukan Deskripsi"
-                                size="h-16"
-                            />
-                            <Textarea
-                                label="Lokasi Pura"
-                                value={data?.lokasi_pura}
-                                onChange={handleOnChange}
-                                name="lokasi_pura"
-                                placeholder="Masukan Lokasi"
-                                size="h-16"
-                            />
-
-                            <div className="modal-action">
-                                <button
-                                    className="btn btn-sm"
-                                    type="reset"
-                                    onClick={() => {
-                                        setModalConfig({
-                                            ...modalConfig,
-                                            show: false,
-                                            type: "",
-                                        });
-                                        reset();
-                                    }}
-                                >
-                                    Tutup
-                                </button>
-                                <button
-                                    className="btn btn-primary btn-sm"
-                                    disabled={processing}
-                                >
-                                    Simpan
-                                </button>
-                            </div>
-                        </form>
                     </div>
                 </div>
             </div>

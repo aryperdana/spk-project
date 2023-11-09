@@ -1,12 +1,24 @@
 import React, { useState } from "react";
 import { Input } from "@/Pages/AdminPanel/Components";
 
-const TableNormalisasiTerbobot = ({
+const TableOutput = ({
     dataKriteria,
     hasilTableStudiKasus,
     atributKriteria,
     subKriteriaAll,
 }) => {
+    function formatRupiah(number) {
+        // Convert the number to a string and add commas
+        var formattedNumber = number.toLocaleString("id-ID", {
+            style: "currency",
+            currency: "IDR",
+        });
+
+        // If the currency symbol is placed after the number, move it to the front
+        formattedNumber = formattedNumber.replace("IDR", "Rp.");
+
+        return formattedNumber;
+    }
     const calculateSumKriteria = (arr, priority) => {
         if (priority < 1) {
             return 0;
@@ -172,29 +184,9 @@ const TableNormalisasiTerbobot = ({
                 const existing = result.find(
                     (obj) => obj.nama_kriteria === current.nama_kriteria
                 );
-
                 if (existing) {
-                    const subKriteriaFind = current?.sub_kriteria.find(
-                        (res) => res.id === current.id_sub_kriteria
-                    );
-
-                    const bobotSubKriteria =
-                        (1 /
-                            parseFloat(
-                                subKriteriaAll.filter(
-                                    (res) => res.id_kriteria === current.id
-                                ).length
-                            )) *
-                        calculateSumSubKriteria(
-                            subKriteriaAll,
-                            parseFloat(subKriteriaFind.priority),
-                            current.id
-                        );
-
                     existing.value += current.value;
-
-                    existing.hasil_bobot +=
-                        current.hasil_bobot * bobotSubKriteria;
+                    existing.hasil_bobot += current.hasil_bobot;
                 } else {
                     result.push(current);
                 }
@@ -229,79 +221,162 @@ const TableNormalisasiTerbobot = ({
         return arr;
     };
 
+    const getDataTableUitility = () =>
+        mergedData.map((val) => {
+            return {
+                ...val,
+                kriteria: val.kriteria.map((res, i) => {
+                    return {
+                        ...res,
+                        total_utility:
+                            1 *
+                            ((res?.hasil_bobot - getTotalMin()[i]?.hasil) /
+                                (getTotalMax()[i]?.hasil -
+                                    getTotalMin()[i]?.hasil)),
+                    };
+                }),
+            };
+        });
+
+    const getDataTableAkhir = () => {
+        const dataKriteriaBobot = dataKriteria.map((val) => ({
+            ...val,
+            bobot:
+                (1 / parseFloat(dataKriteria.length)) *
+                calculateSumKriteria(dataKriteria, parseFloat(val.priority)),
+        }));
+        return getDataTableUitility().map((val) => {
+            return {
+                ...val,
+                kriteria: val.kriteria.map((res, i) => {
+                    return {
+                        ...res,
+                        total_nilai_akhir:
+                            dataKriteriaBobot[i]?.bobot * res?.total_utility,
+                    };
+                }),
+            };
+        });
+    };
+
     const AlternatifRows = () => (
         <>
-            {mergedData.map((alternatif, i) => {
-                const calInd = parseInt(i - 1);
+            {getDataTableAkhir()
+                .sort((a, b) => {
+                    const totalNilaiAkhirA = a?.kriteria?.reduce(
+                        (prev, curr) =>
+                            prev + parseFloat(curr.total_nilai_akhir ?? 0),
+                        0
+                    );
+                    const totalNilaiAkhirB = b?.kriteria?.reduce(
+                        (prev, curr) =>
+                            prev + parseFloat(curr.total_nilai_akhir ?? 0),
+                        0
+                    );
+                    return totalNilaiAkhirB - totalNilaiAkhirA;
+                })
+                .map((alternatif, i) => {
+                    const totalNilaiAkhir = alternatif?.kriteria?.reduce(
+                        (prev, curr) =>
+                            prev + parseFloat(curr.total_nilai_akhir ?? 0),
+                        0
+                    );
 
-                return (
-                    <>
-                        <tr key={alternatif.id}>
-                            <td>
-                                {alternatif.nama_alternatif ===
-                                    hasilTableStudiKasus[calInd]
-                                        ?.nama_alternatif && i > 0
-                                    ? "-"
-                                    : alternatif?.nama_alternatif}
-                            </td>
-                            <td>
-                                {alternatif.nama_alternatif ===
-                                    hasilTableStudiKasus[calInd]
-                                        ?.nama_alternatif && i > 0
-                                    ? "-"
-                                    : alternatif.kategori}
-                            </td>
+                    const persentaseNilaiAkhir = totalNilaiAkhir * 1;
+                    const biayaDibutuhkan =
+                        alternatif.kategori === "pelinggih"
+                            ? 10000000
+                            : 20000000;
+                    const danaDimiliki = alternatif?.kriteria.find(
+                        (res) => res?.nama_kriteria === "Nominal Dana Tersedia"
+                    )?.value;
 
-                            <td>{alternatif.jumlah_jenis_bahan}</td>
-                            <td>{alternatif.nama_bagian_bangunan}</td>
-                            {alternatif?.kriteria?.map((val, ind) => (
-                                <td>{val.hasil_bobot}</td>
-                            ))}
-                        </tr>
-                    </>
-                );
-            })}
-            <tr>
-                <td colSpan="4" className="font-bold text-center">
-                    MIN
-                </td>
-                {getTotalMin().map((res) => (
-                    <td className="font-bold">{res.hasil}</td>
-                ))}
-            </tr>
-            <tr>
-                <td colSpan="4" className="font-bold text-center">
-                    MAX
-                </td>
-                {getTotalMax().map((res) => (
-                    <td className="font-bold">{res.hasil}</td>
-                ))}
-            </tr>
+                    const statusDana =
+                        parseInt(danaDimiliki) - parseInt(biayaDibutuhkan);
+
+                    return (
+                        <>
+                            <tr key={alternatif.id}>
+                                <td>{i + 1}</td>
+                                <td>{totalNilaiAkhir}</td>
+                                <td>-</td>
+                                <td>{alternatif?.nama_alternatif}</td>
+                                <td className="capitalize">
+                                    {alternatif.kategori}
+                                </td>
+                                <td>
+                                    {totalNilaiAkhir < 0.5
+                                        ? "Tidak Perlu Diperbaiki"
+                                        : "Perlu Diperbaiki"}
+                                </td>
+                                <td>{alternatif.nama_bagian_bangunan}</td>
+                                <td>
+                                    {alternatif.nama_bagian_bangunan === "Atap"
+                                        ? "Atap"
+                                        : "Seluruh Bagian"}
+                                </td>
+                                <td>
+                                    {
+                                        alternatif?.kriteria.find(
+                                            (res) =>
+                                                res?.nama_kriteria ===
+                                                "Bahan yang Digunakan"
+                                        )?.value
+                                    }
+                                </td>
+                                <td>{formatRupiah(biayaDibutuhkan)}</td>
+                                <td>{formatRupiah(danaDimiliki)}</td>
+                                <td>{formatRupiah(statusDana)}</td>
+                                <td>
+                                    {alternatif.kategori === "pelinggih"
+                                        ? "15 Hari"
+                                        : "30 Hari"}
+                                </td>
+                            </tr>
+                        </>
+                    );
+                })}
         </>
     );
 
     return (
         <>
             <div className="overflow-x-auto">
-                <div className="font-bold text-center">
-                    TABEL NORMALISASI TERBOBOT
-                </div>
-                <table className="table table-compact table-auto w-full">
+                <div className="font-bold text-center">OUTPUT</div>
+                <table className="table table-compact w-full">
                     <thead>
                         <tr>
-                            <th className="text-center" rowSpan="2">
-                                Alternatif
+                            <th className="text-center">
+                                Urutan Prioritas
+                                <br /> Perbaikan
                             </th>
-                            <th className="text-center" rowSpan="2">
-                                Kategori
+                            <th className="text-center">Hasil Perhitungan</th>
+                            <th className="text-center">
+                                Saran Perbaikan <br />
+                                Bangunan
                             </th>
-                            <th className="text-center" rowSpan="2">
-                                Jumlah Jenis Bahan
+                            <th className="text-center">Nama Bangunan</th>
+                            <th className="text-center">Kategori Bangunan</th>
+                            <th className="text-center">Saran Revitalisasi</th>
+                            <th className="text-center">Bagian yang Di Cek</th>
+                            <th className="text-center">
+                                Bagian yang <br /> Disarankan <br /> untuk di
+                                <br />
+                                Revitalisasi
                             </th>
-                            <th className="text-center" rowSpan="2">
-                                Bagian Bangunan
+                            <th className="text-center">
+                                Bahan yang <br /> Digunakan
                             </th>
-                            {kriteriaHeaders}
+                            <th className="text-center">
+                                Estimasi Minimal <br />
+                                Biaya Dibutuhkan
+                            </th>
+                            <th className="text-center">Dana Dimiliki</th>
+                            <th className="text-center">Status Dana</th>
+                            <th className="text-center">
+                                Estimasi Waktu <br />
+                                Pengerjaan
+                            </th>
                         </tr>
                     </thead>
                     <tbody>{AlternatifRows()}</tbody>
@@ -311,4 +386,4 @@ const TableNormalisasiTerbobot = ({
     );
 };
 
-export default TableNormalisasiTerbobot;
+export default TableOutput;

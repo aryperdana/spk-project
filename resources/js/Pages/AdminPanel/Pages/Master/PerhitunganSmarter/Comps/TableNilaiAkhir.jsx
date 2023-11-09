@@ -301,7 +301,7 @@ const TableNilaiAkhir = ({
                                     : alternatif.kategori}
                             </td>
 
-                            <td></td>
+                            <td>{alternatif.jumlah_jenis_bahan}</td>
                             <td>{alternatif.nama_bagian_bangunan}</td>
                             {alternatif?.kriteria?.map((val, ind) => (
                                 <td>{val.total_nilai_akhir}</td>

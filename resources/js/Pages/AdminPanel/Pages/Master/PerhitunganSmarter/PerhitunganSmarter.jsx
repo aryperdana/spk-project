@@ -5,6 +5,7 @@ import {
     TableNilaiStudiKasus,
     TableNilaiTerbobot,
     TableNormalisasiTerbobot,
+    TableOutput,
     TableStudiKasus,
 } from "./Comps";
 import TableNilaiUtility from "./Comps/TableNilaiUtility";
@@ -20,21 +21,41 @@ const PerhitunganSmarter = ({
     id_project,
 }) => {
     const [dataAlternatifSelected, setDataAlternatifSelected] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [tableNilaiStudiKasusConfig, setTableNilaiStudiKasusConfig] =
         useState({ show: false, data: [] });
 
+    const dataBagianBangunanLebihDariSatu = [
+        { label: "Atap" },
+        { label: "Tengah" },
+        { label: "Bawah" },
+    ];
+
+    const dataBagianBangunanHanyaSatu = [{ label: "Seluruh Bagian" }];
+
     const transformDataAlternatif = (data) => {
         const value = data.flatMap((item) => {
-            const rowSpan = item?.detail_bagian_bangunan.length;
-            return item?.detail_bagian_bangunan?.map((subItem) => ({
-                id_project: item.id,
-                id_alternatif: item?.alternatif?.id,
-                nama_alternatif: item?.alternatif?.nama_alternatif,
-                kategori: item?.alternatif?.kategori,
-                id_bagian_bangunan: subItem.id,
-                nama_bagian_bangunan: subItem.nama_bagian_bangunan,
-                row_span: rowSpan,
-            }));
+            const rowSpan =
+                item?.jumlah_jenis_bahan === "Lebih dari Satu" ? 3 : 0;
+            return rowSpan > 0
+                ? dataBagianBangunanLebihDariSatu?.map((subItem) => ({
+                      id_project: item.id,
+                      id_alternatif: item?.alternatif?.id,
+                      nama_alternatif: item?.alternatif?.nama_alternatif,
+                      kategori: item?.alternatif?.kategori,
+                      nama_bagian_bangunan: subItem.label,
+                      row_span: rowSpan,
+                      jumlah_jenis_bahan: item?.jumlah_jenis_bahan,
+                  }))
+                : dataBagianBangunanHanyaSatu?.map((subItem) => ({
+                      id_project: item.id,
+                      id_alternatif: item?.alternatif?.id,
+                      nama_alternatif: item?.alternatif?.nama_alternatif,
+                      kategori: item?.alternatif?.kategori,
+                      nama_bagian_bangunan: subItem.label,
+                      jumlah_jenis_bahan: item?.jumlah_jenis_bahan,
+                      row_span: rowSpan,
+                  }));
         });
 
         return value;
@@ -177,6 +198,28 @@ const PerhitunganSmarter = ({
                                     }
                                     atributKriteria={atribut_kriteria_all}
                                 />
+
+                                <hr />
+                                <TableOutput
+                                    dataAlternatif={transformDataAlternatif(
+                                        dataAlternatifSelected
+                                    )}
+                                    dataKriteria={kriteria_data}
+                                    subKriteriaDropdown={sub_kriteria_dropdown}
+                                    subKriteriaAll={sub_kriteria_all}
+                                    hasilTableStudiKasus={
+                                        tableNilaiStudiKasusConfig.data
+                                    }
+                                    atributKriteria={atribut_kriteria_all}
+                                />
+                                <div className="flex justify-end gap-2 mt-3">
+                                    <div
+                                        className="btn btn-warning btn-sm"
+                                        onClick={() => window.location.reload()}
+                                    >
+                                        Hitung Ulang
+                                    </div>
+                                </div>
                             </>
                         )}
                 </div>

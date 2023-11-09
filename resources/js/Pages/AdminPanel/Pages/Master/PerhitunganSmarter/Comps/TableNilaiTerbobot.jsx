@@ -197,7 +197,7 @@ const TableNilaiTerbobot = ({
                         : alternatif.kategori}
                 </td>
 
-                <td></td>
+                <td>{alternatif.jumlah_jenis_bahan}</td>
                 <td>{alternatif.nama_bagian_bangunan}</td>
                 {alternatif?.kriteria?.map((val, ind) => (
                     <td>{checkScoreAtributKriteria(val)}</td>
