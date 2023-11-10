@@ -50,6 +50,7 @@ class AlternatifController extends Controller
 
         $alternatif = new Alternatif;
         $alternatif->nama_alternatif = $request->nama_alternatif;
+        $alternatif->kode = $request->kode;
         $alternatif->kategori = $request->kategori;
         $alternatif->save();
 
@@ -95,6 +96,7 @@ class AlternatifController extends Controller
         
         $alternatif = Alternatif::find($id);
         $alternatif->nama_alternatif = $request->nama_alternatif;
+        $alternatif->kode = $request->kode;
         $alternatif->kategori = $request->kategori;
         $alternatif->save();
 

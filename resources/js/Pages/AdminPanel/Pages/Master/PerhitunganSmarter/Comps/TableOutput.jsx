@@ -1,12 +1,36 @@
 import React, { useState } from "react";
 import { Input } from "@/Pages/AdminPanel/Components";
+import { useForm } from "@inertiajs/react";
+import { router } from "@inertiajs/react";
 
 const TableOutput = ({
     dataKriteria,
     hasilTableStudiKasus,
     atributKriteria,
     subKriteriaAll,
+    dataAlternatifSelected,
+    project_dropdown,
 }) => {
+    const {
+        data,
+        setData,
+        post,
+        put,
+        processing,
+        errors,
+        reset,
+        delete: destroy,
+    } = useForm({
+        id: "",
+        id_projects: dataAlternatifSelected[0].id_project,
+        nama_projects: project_dropdown.find(
+            (val) => dataAlternatifSelected[0].id_project === val.id
+        ).nama_project,
+        detail: [],
+    });
+
+    console.log("cok", data);
+
     function formatRupiah(number) {
         // Convert the number to a string and add commas
         var formattedNumber = number.toLocaleString("id-ID", {
@@ -259,6 +283,52 @@ const TableOutput = ({
         });
     };
 
+    const mappingSubmitData = (value) =>
+        value.map((alternatif) => {
+            const totalNilaiAkhir = alternatif?.kriteria?.reduce(
+                (prev, curr) => prev + parseFloat(curr.total_nilai_akhir ?? 0),
+                0
+            );
+
+            const biayaDibutuhkan =
+                alternatif.kategori === "pelinggih" ? 10000000 : 20000000;
+            const danaDimiliki = alternatif?.kriteria.find(
+                (res) => res?.nama_kriteria === "Nominal Dana Tersedia"
+            )?.value;
+
+            const statusDana =
+                parseInt(danaDimiliki) - parseInt(biayaDibutuhkan);
+            return {
+                hasil_perhitungan: totalNilaiAkhir,
+                saran_perbaikan_bangunan: alternatif?.kode_alternatif,
+                nama_bangunan: alternatif?.nama_alternatif,
+                kategori_bangunan: alternatif?.kategori,
+                saran_revitalisasi:
+                    totalNilaiAkhir < 0.5
+                        ? "Tidak Perlu Diperbaiki"
+                        : "Perlu Diperbaiki",
+                bagian_yang_dicek: alternatif.nama_bagian_bangunan,
+                bagian_yang_direvitalisasi:
+                    alternatif.nama_bagian_bangunan === "Atap"
+                        ? "Atap"
+                        : "Seluruh Bagian",
+                bahan_yang_digunakan: alternatif?.kriteria.find(
+                    (res) => res?.nama_kriteria === "Bahan yang Digunakan"
+                )?.value,
+                estimasi_biaya_dibutuhkan: biayaDibutuhkan,
+                dana_dimiliki: danaDimiliki,
+                status_dana: statusDana,
+                estimasi_pengerjaan:
+                    alternatif.kategori === "pelinggih" ? "15 Hari" : "30 Hari",
+            };
+        });
+
+    const submit = (value) => {
+        const finalValues = { ...data, detail: mappingSubmitData(value) };
+
+        router.post("perhitungan-smarter", finalValues);
+    };
+
     const AlternatifRows = () => (
         <>
             {getDataTableAkhir()
@@ -299,7 +369,7 @@ const TableOutput = ({
                             <tr key={alternatif.id}>
                                 <td>{i + 1}</td>
                                 <td>{totalNilaiAkhir}</td>
-                                <td>-</td>
+                                <td>{alternatif?.kode_alternatif}</td>
                                 <td>{alternatif?.nama_alternatif}</td>
                                 <td className="capitalize">
                                     {alternatif.kategori}
@@ -381,6 +451,20 @@ const TableOutput = ({
                     </thead>
                     <tbody>{AlternatifRows()}</tbody>
                 </table>
+            </div>
+            <div className="flex justify-end gap-2 mt-3">
+                <div
+                    className="btn btn-primary btn-sm"
+                    onClick={() => submit(getDataTableAkhir())}
+                >
+                    Simpan
+                </div>
+                <div
+                    className="btn btn-warning btn-sm"
+                    onClick={() => window.location.reload()}
+                >
+                    Hitung Ulang
+                </div>
             </div>
         </>
     );

@@ -37,6 +37,7 @@ const Alternatif = ({ alternatif_data }) => {
         delete: destroy,
     } = useForm({
         id: "",
+        kode: "",
         nama_alternatif: "",
         kategori: "",
     });
@@ -130,6 +131,7 @@ const Alternatif = ({ alternatif_data }) => {
                                 <tr>
                                     <th className="text-center">No</th>
                                     <th className="text-center">Aksi</th>
+                                    <th className="text-center">Kode</th>
                                     <th className="text-center">Alternatif</th>
                                     <th className="text-center">Katgeori</th>
                                 </tr>
@@ -150,6 +152,7 @@ const Alternatif = ({ alternatif_data }) => {
                                                                 type: "update",
                                                             });
                                                             setData({
+                                                                kode: val.kode,
                                                                 nama_alternatif:
                                                                     val.nama_alternatif,
                                                                 kategori:
@@ -172,6 +175,7 @@ const Alternatif = ({ alternatif_data }) => {
                                                     </button>
                                                 </div>
                                             </td>
+                                            <td>{val.kode}</td>
                                             <td>{val.nama_alternatif}</td>
                                             <td className="capitalize">
                                                 {val.kategori}
@@ -217,6 +221,15 @@ const Alternatif = ({ alternatif_data }) => {
                     <hr />
                     <div className="modal-middle mt-3">
                         <form onSubmit={submit}>
+                            <Input
+                                type="text"
+                                label="Kode"
+                                name="kode"
+                                placeholder="Masukan Alternatif"
+                                onChange={handleOnChange}
+                                value={data?.kode}
+                                errorText={errors.kode}
+                            />
                             <Input
                                 type="text"
                                 label="Alternatif"

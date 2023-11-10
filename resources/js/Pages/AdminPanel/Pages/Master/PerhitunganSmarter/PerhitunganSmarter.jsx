@@ -21,9 +21,12 @@ const PerhitunganSmarter = ({
     id_project,
 }) => {
     const [dataAlternatifSelected, setDataAlternatifSelected] = useState([]);
+    const [dataProjectSelected, setDataProjectSelected] = useState({});
     const [loading, setLoading] = useState(false);
     const [tableNilaiStudiKasusConfig, setTableNilaiStudiKasusConfig] =
         useState({ show: false, data: [] });
+
+    console.log(project_dropdown);
 
     const dataBagianBangunanLebihDariSatu = [
         { label: "Atap" },
@@ -46,6 +49,7 @@ const PerhitunganSmarter = ({
                       nama_bagian_bangunan: subItem.label,
                       row_span: rowSpan,
                       jumlah_jenis_bahan: item?.jumlah_jenis_bahan,
+                      kode_alternatif: item?.alternatif?.kode,
                   }))
                 : dataBagianBangunanHanyaSatu?.map((subItem) => ({
                       id_project: item.id,
@@ -55,6 +59,7 @@ const PerhitunganSmarter = ({
                       nama_bagian_bangunan: subItem.label,
                       jumlah_jenis_bahan: item?.jumlah_jenis_bahan,
                       row_span: rowSpan,
+                      kode_alternatif: item?.alternatif?.kode,
                   }));
         });
 
@@ -211,15 +216,11 @@ const PerhitunganSmarter = ({
                                         tableNilaiStudiKasusConfig.data
                                     }
                                     atributKriteria={atribut_kriteria_all}
+                                    dataAlternatifSelected={
+                                        dataAlternatifSelected
+                                    }
+                                    project_dropdown={project_dropdown}
                                 />
-                                <div className="flex justify-end gap-2 mt-3">
-                                    <div
-                                        className="btn btn-warning btn-sm"
-                                        onClick={() => window.location.reload()}
-                                    >
-                                        Hitung Ulang
-                                    </div>
-                                </div>
                             </>
                         )}
                 </div>

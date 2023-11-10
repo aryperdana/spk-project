@@ -3,6 +3,7 @@ import React from "react";
 import { AiOutlineHome, AiOutlineUser } from "react-icons/ai";
 import { CiCalculator2 } from "react-icons/ci";
 import { IoServerOutline } from "react-icons/io5";
+import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
 
 export const SideBarLayout = () => {
     return (
@@ -61,6 +62,12 @@ export const SideBarLayout = () => {
                     <Link href="/perhitungan-smarter">
                         <CiCalculator2 />
                         Perhitungan SMARTER
+                    </Link>
+                </li>
+                <li>
+                    <Link href="/laporan-hasil-perhitungan">
+                        <HiOutlineClipboardDocumentList />
+                        Laporan Hasil Perhitungan
                     </Link>
                 </li>
             </ul>

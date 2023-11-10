@@ -5,13 +5,14 @@ import {
     Pagination,
     Textarea,
 } from "@/Pages/AdminPanel/Components";
-import { router, useForm } from "@inertiajs/react";
+import { Link, router, useForm } from "@inertiajs/react";
 import React, { useState, useEffect } from "react";
 import MainLayout from "../../../Layouts";
 import { IoAddOutline } from "react-icons/io5";
 import { HiOutlineTrash, HiOutlinePencilAlt } from "react-icons/hi";
 
 const TambahProjects = ({ alternatif_dropdown, id_user, singleData }) => {
+    console.log("cok", alternatif_dropdown);
     console.log(singleData);
     const [dataAlternatif, setDataAlternatif] = useState({});
     const [modalConfig, setModalConfig] = useState({
@@ -27,6 +28,13 @@ const TambahProjects = ({ alternatif_dropdown, id_user, singleData }) => {
         { value: "hanya satu", label: "Hanya Satu" },
         { value: "lebih dari satu", label: "Lebih dari Satu" },
     ];
+    // singleData?.detail_alternatif?.map((val) => ({
+    //     ...val,
+    //     isUse: true,
+    //     jumlah_jenis_bahan: val?.jumlah_jenis_bahan,
+    //     nama_alternatif: val?.alternatif?.nama_alternatif,
+    //     kategori: val?.alternatif?.kategori,
+    // })),
 
     const {
         data,
@@ -44,14 +52,30 @@ const TambahProjects = ({ alternatif_dropdown, id_user, singleData }) => {
         lokasi_pura: singleData?.lokasi_pura,
         deskripsi_project: singleData?.deskripsi_project,
         id_user: id_user,
-        detail: singleData?.detail_alternatif?.map((val) => ({
-            ...val,
-            isUse: false,
-            jumlah_jenis_bahan: val?.jumlah_jenis_bahan,
-            nama_alternatif: val?.alternatif?.nama_alternatif,
-            kategori: val?.alternatif?.kategori,
-        })),
+        detail: alternatif_dropdown.map((val) =>
+            singleData?.detail_alternatif?.find(
+                (res) => res?.alternatif?.kode === val.kode
+            )?.alternatif?.kode === val.kode
+                ? {
+                      ...singleData?.detail_alternatif?.find(
+                          (res) => res?.alternatif?.kode === val.kode
+                      ),
+                      isUse: true,
+                      jumlah_jenis_bahan: singleData?.detail_alternatif?.find(
+                          (res) => res?.alternatif?.kode === val.kode
+                      )?.jumlah_jenis_bahan,
+                      nama_alternatif: singleData?.detail_alternatif?.find(
+                          (res) => res?.alternatif?.kode === val.kode
+                      )?.alternatif?.nama_alternatif,
+                      kategori: singleData?.detail_alternatif?.find(
+                          (res) => res?.alternatif?.kode === val.kode
+                      )?.alternatif?.kategori,
+                  }
+                : { ...val, isUse: false }
+        ),
     });
+
+    console.log("tosa", data);
 
     const rupiah = (number) => {
         return new Intl.NumberFormat("id-ID", {
@@ -112,6 +136,14 @@ const TambahProjects = ({ alternatif_dropdown, id_user, singleData }) => {
     return (
         <MainLayout title="Project" navbarTitle="Tambah Project">
             <form onSubmit={submit}>
+                <div className="flex justify-end">
+                    <Link
+                        className="btn btn-outline btn-sm mb-3"
+                        href="/projects"
+                    >
+                        Kembali
+                    </Link>
+                </div>
                 <div className="card w-full bg-base-100 shadow-sm">
                     <div className="card-body">
                         <div className="grid grid-cols-2 gap-3">
@@ -156,8 +188,8 @@ const TambahProjects = ({ alternatif_dropdown, id_user, singleData }) => {
                         </div>
                     </div>
                 </div>
-
-                <div className="card w-full bg-base-100 shadow-sm mt-4">
+                <div className="font-bold mt-3 mb-1">Alternatif</div>
+                <div className="card w-full bg-base-100 shadow-sm">
                     <div className="card-body">
                         <div className="overflow-x-auto">
                             <table className="table table-compact table-auto w-full">

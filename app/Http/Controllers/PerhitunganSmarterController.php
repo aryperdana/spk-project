@@ -8,6 +8,8 @@ use App\Models\Alternatif;
 use App\Models\Projects;
 use App\Models\SubKriteria;
 use App\Models\AtributKriteria;
+use App\Models\HasilPerhitungan;
+use App\Models\HasilPerhitunganDetail;
 use Inertia\Inertia;
 
 class PerhitunganSmarterController extends Controller
@@ -50,7 +52,33 @@ class PerhitunganSmarterController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $hasilPerhitungan = new HasilPerhitungan;
+        $hasilPerhitungan->id_projects = $request->id_projects;
+        $hasilPerhitungan->nama_projects = $request->nama_projects;
+        $hasilPerhitungan->save();
+
+        foreach ($request->detail as $key => $value) {
+            $detail = array(
+                'id_hasil_perhitungan'   => $hasilPerhitungan->id,
+                'hasil_perhitungan'=> $value['hasil_perhitungan'],
+                'saran_perbaikan_bangunan'=> $value['saran_perbaikan_bangunan'],
+                'nama_bangunan'=> $value['nama_bangunan'],
+                'kategori_bangunan'=> $value['kategori_bangunan'],
+                'saran_revitalisasi'=> $value['saran_revitalisasi'],
+                'bagian_yang_dicek'=> $value['bagian_yang_dicek'],
+                'bagian_yang_direvitalisasi'=> $value['bagian_yang_direvitalisasi'],
+                'bahan_yang_digunakan'=> $value['bahan_yang_digunakan'],
+                'estimasi_biaya_dibutuhkan'=> $value['estimasi_biaya_dibutuhkan'],
+                'dana_dimiliki'=> $value['dana_dimiliki'],
+                'status_dana'=> $value['status_dana'],
+                'estimasi_pengerjaan'=> $value['estimasi_pengerjaan'],
+            );
+            
+            $detail = HasilPerhitunganDetail::create($detail);
+        }
+
+        return to_route('laporan-hasil-perhitungan.index');
     }
 
     /**
