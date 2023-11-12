@@ -17,6 +17,7 @@ const FormTableSubKriteria = ({ setData, data }) => {
         kode: "-",
         nama_sub_kriteria: "",
         priority: "",
+        score_sub_kriteria: "",
         is_header: 2,
         sub_atribut: [],
     });
@@ -30,9 +31,10 @@ const FormTableSubKriteria = ({ setData, data }) => {
     const submitFormTableSubKriteria = () => {
         setData({ ...data, detail: [...data?.detail, formTableValue] });
         setFormTableValue({
-            kode: "",
+            kode: "-",
             nama_sub_kriteria: "",
             priority: "",
+            score_sub_kriteria: "",
             is_header: 2,
             sub_atribut: [],
         });
@@ -56,6 +58,15 @@ const FormTableSubKriteria = ({ setData, data }) => {
                     placeholder="Masukan Priority"
                     onChange={handleOnChange}
                     value={formTableValue?.priority}
+                />
+            </td>
+            <td className="w-3">
+                <Input
+                    type="text"
+                    name="score_sub_kriteria"
+                    placeholder="Masukan Scoring"
+                    onChange={handleOnChange}
+                    value={formTableValue?.score_sub_kriteria}
                 />
             </td>
             <td className="w-3">
@@ -311,6 +322,7 @@ const TambahKriteria = () => {
                                             Priority
                                         </th>
                                         <th className="text-center">Bobot</th>
+                                        <th className="text-center">Scoring</th>
                                         <th className="text-center">Header</th>
                                         <th className="text-center">Aksi</th>
                                     </tr>
@@ -348,6 +360,11 @@ const TambahKriteria = () => {
                                                                             val.priority
                                                                         )
                                                                     )}
+                                                            </td>
+                                                            <td>
+                                                                {
+                                                                    val?.score_sub_kriteria
+                                                                }
                                                             </td>
                                                             <td className="text-center">
                                                                 <div>

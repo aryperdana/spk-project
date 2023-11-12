@@ -37,29 +37,33 @@ const TableNilaiStudiKasus = ({
     }, []);
 
     const checkScoreAtributKriteria = (data) => {
-        const getAtributById = atributKriteria.filter((val) =>
-            data?.id_sub_kriteria
-                ? val.id_sub_kriteria === data.id_sub_kriteria
-                : val.id_kriteria === data.id
-        );
+        const getAtributById =
+            data?.sub_kriteria?.length > 0 && data?.atribut_kriteria?.length > 0
+                ? data?.atribut_kriteria
+                : data?.sub_kriteria;
 
         const scoreMatchesCondition = (item, value) => {
-            const range = item?.score?.split(" – ");
+            const range = item?.score
+                ? item?.score?.split(" – ")
+                : item?.score_sub_kriteria?.split(" – ");
 
-            if (range.length === 2 && value !== 0) {
+            const score = item?.score ? item?.score : item?.score_sub_kriteria;
+
+            if (typeof value === "string") {
+                return value === item.nama_atribut_kriteria;
+            } else if (value === 0) {
+                return parseInt(score) === value;
+            } else if (range?.length === 2 && value > 0) {
                 const lower = parseInt(range[0]);
                 const upper = parseInt(range[1]);
                 return value >= lower && value <= upper;
-            } else if (item?.score?.startsWith(">") && value !== 0) {
-                const threshold = parseInt(item?.score?.substring(1));
+            } else if (score?.startsWith(">") && value > 0) {
+                const threshold = parseInt(score?.substring(1));
                 return value > threshold;
-            } else if (item?.score?.startsWith("<") && value !== 0) {
-                const threshold = parseInt(item?.score?.substring(1));
+            } else if (score?.startsWith("<") && value > 0) {
+                const threshold = parseInt(score?.substring(1));
                 return value < threshold;
-            } else if (value === 0) {
-                return parseInt(item?.score) === value;
             }
-
             return item;
         };
 
@@ -72,7 +76,8 @@ const TableNilaiStudiKasus = ({
             ? data?.value
             : typeof data?.value === "string"
             ? data?.value
-            : filteredData?.nama_atribut_kriteria ?? "-";
+            : filteredData?.nama_atribut_kriteria ??
+              filteredData?.nama_sub_kriteria;
     };
 
     const alternatifRows = hasilTableStudiKasus.map((alternatif, i) => {

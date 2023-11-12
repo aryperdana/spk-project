@@ -23,7 +23,7 @@ class PerhitunganSmarterController extends Controller
         $alternatif = Alternatif::all();
         $kriteria = Kriteria::with('subKriteria')->with('atributKriteria')->get();
         $project = Projects::with('detailAlternatif')->get();
-        $subKriteria = SubKriteria::with('atributKriteria')->where('id_kriteria', '=', 6)->get();
+        $subKriteria = SubKriteria::with('atributKriteria')->where('id_kriteria', '=', 4)->get();
         $atributKriteria = AtributKriteria::all();
         $subKriteriaAll = SubKriteria::with('atributKriteria')->get();
         

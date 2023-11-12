@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('atribut_kriterias', function (Blueprint $table) {
-            $table->unsignedBigInteger('id_kriteria')->nullable()->change();
+            $table->unsignedBigInteger('id_kriteria')->nullable();
             $table->unsignedBigInteger('id_sub_kriteria')->nullable()->change();
-            $table->string('score')->nullable()->change();
+            $table->string('score')->nullable();
         });
         
     }

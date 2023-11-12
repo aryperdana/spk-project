@@ -1,10 +1,8 @@
 <?php
 
+use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Migrations\Migration;
-
-
 
 return new class extends Migration
 {
@@ -14,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('sub_kriterias', function (Blueprint $table) {
-            $table->boolean('is_header')->nullable()->default(false);
+            $table->string('score_sub_kriteria')->nullable()->default(false);
         });
     }
 
@@ -23,6 +21,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sub_kriterias');
+        //
     }
 };

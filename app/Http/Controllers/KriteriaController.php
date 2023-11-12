@@ -69,6 +69,7 @@ class KriteriaController extends Controller
                 'nama_sub_kriteria' => $value['nama_sub_kriteria'],
                 'kode' =>  $value['kode'],
                 'priority' => $value['priority'],
+                'score_sub_kriteria' => $value['score_sub_kriteria'],
                 'is_header' => $value['is_header']
             );
 
@@ -151,6 +152,7 @@ class KriteriaController extends Controller
                 'nama_sub_kriteria' => $value['nama_sub_kriteria'],
                 'kode' =>  $value['kode'],
                 'priority' => $value['priority'],
+                'score_sub_kriteria' => $value['score_sub_kriteria'],
                 'is_header' => $value['is_header']
             );
 

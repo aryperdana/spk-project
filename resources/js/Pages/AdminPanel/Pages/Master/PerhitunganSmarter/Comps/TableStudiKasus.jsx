@@ -61,6 +61,8 @@ const TableStudiKasus = ({
             }),
         }))
     );
+
+    console.log("cinga", dataTransformed);
     const kriteriaHeaders = dataKriteria.map((kriteria) => {
         const colspan = kriteria.sub_kriteria.filter(
             (val) => val.is_header === 1
@@ -108,7 +110,7 @@ const TableStudiKasus = ({
                 <td>{alternatif.jumlah_jenis_bahan}</td>
                 <td>{alternatif.nama_bagian_bangunan}</td>
                 {alternatif?.kriteria?.map((val, ind) =>
-                    val?.id === 6 ? (
+                    val?.id === 4 ? (
                         <td>
                             <div className="form-control w-full">
                                 <select

@@ -104,21 +104,25 @@ const TableOutput = ({
 
     const checkScoreAtributKriteria = (data) => {
         const scoreMatchesCondition = (item, value) => {
-            const range = item?.score?.split(" – ");
+            const range = item?.score
+                ? item?.score?.split(" – ")
+                : item?.score_sub_kriteria?.split(" – ");
+
+            const score = item?.score ? item?.score : item?.score_sub_kriteria;
 
             if (typeof value === "string") {
                 return value === item.nama_atribut_kriteria;
             } else if (value === 0) {
-                return parseInt(item?.score) === value;
-            } else if (range.length === 2 && value > 0) {
+                return parseInt(score) === value;
+            } else if (range?.length === 2 && value > 0) {
                 const lower = parseInt(range[0]);
                 const upper = parseInt(range[1]);
                 return value >= lower && value <= upper;
-            } else if (item?.score?.startsWith(">") && value > 0) {
-                const threshold = parseInt(item?.score?.substring(1));
+            } else if (score?.startsWith(">") && value > 0) {
+                const threshold = parseInt(score?.substring(1));
                 return value > threshold;
-            } else if (item?.score?.startsWith("<") && value > 0) {
-                const threshold = parseInt(item?.score?.substring(1));
+            } else if (score?.startsWith("<") && value > 0) {
+                const threshold = parseInt(score?.substring(1));
                 return value < threshold;
             }
             return item;
@@ -148,9 +152,15 @@ const TableOutput = ({
 
         const filterDataSubKriteria = data?.sub_kriteria
             ?.filter((item) =>
-                filterDataAtributKriteria.length === 0
-                    ? data?.value === item?.nama_sub_kriteria
-                    : filterDataAtributKriteria[0]?.id_sub_kriteria === item?.id
+                typeof data?.value === "string"
+                    ? item?.nama_sub_kriteria !== data?.value
+                        ? data?.value ===
+                          item?.atribut_kriteria?.find(
+                              (res) =>
+                                  res?.nama_atribut_kriteria === data?.value
+                          )?.nama_atribut_kriteria
+                        : data?.value === item?.nama_sub_kriteria
+                    : scoreMatchesCondition(item, data?.value)
             )
             ?.map((val) => ({
                 ...val,
@@ -180,8 +190,8 @@ const TableOutput = ({
             total_bobot:
                 typeof data?.value === "string"
                     ? filterDataSubKriteria[0]?.bobot_sub_kriteria
-                    : filterDataSubKriteria?.length > 0 ||
-                      filterDataAtributKriteria?.length > 0
+                    : data?.atribut_kriteria?.length > 0 &&
+                      data?.sub_kriteria?.length > 0
                     ? filterDataAtributKriteria[0]?.bobot_atribut_kriteria
                     : filterDataSubKriteria[0]?.bobot_sub_kriteria,
         };
@@ -254,9 +264,11 @@ const TableOutput = ({
                         ...res,
                         total_utility:
                             1 *
-                            ((res?.hasil_bobot - getTotalMin()[i]?.hasil) /
-                                (getTotalMax()[i]?.hasil -
-                                    getTotalMin()[i]?.hasil)),
+                            (getTotalMax()[i]?.hasil - getTotalMin()[i]?.hasil
+                                ? (res?.hasil_bobot - getTotalMin()[i]?.hasil) /
+                                  (getTotalMax()[i]?.hasil -
+                                      getTotalMin()[i]?.hasil)
+                                : 0),
                     };
                 }),
             };
