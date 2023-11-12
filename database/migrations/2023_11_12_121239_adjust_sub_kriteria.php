@@ -12,6 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         //
+        Schema::table('sub_kriterias', function (Blueprint $table) {
+            $table->string('kode')->nullable()->change();
+        });
     }
 
     /**
