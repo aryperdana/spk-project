@@ -394,9 +394,21 @@ const TableOutput = ({
                                         )?.value
                                     }
                                 </td>
-                                <td>{formatRupiah(biayaDibutuhkan)}</td>
-                                <td>{formatRupiah(danaDimiliki)}</td>
-                                <td>{formatRupiah(statusDana)}</td>
+                                <td>
+                                    {biayaDibutuhkan
+                                        ? formatRupiah(biayaDibutuhkan)
+                                        : "-"}
+                                </td>
+                                <td>
+                                    {danaDimiliki
+                                        ? formatRupiah(danaDimiliki)
+                                        : "-"}
+                                </td>
+                                <td>
+                                    {statusDana
+                                        ? formatRupiah(statusDana)
+                                        : "-"}
+                                </td>
                                 <td>
                                     {alternatif.kategori === "pelinggih"
                                         ? "15 Hari"
